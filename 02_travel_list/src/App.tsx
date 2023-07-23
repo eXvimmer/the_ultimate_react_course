@@ -9,14 +9,18 @@ function App() {
   const [items, setItems] = useState<Item[]>([]);
 
   const handleAddItem = (item: Item) => {
-    setItems((prev) => [...prev, item]);
+    setItems([...items, item]);
+  };
+
+  const handleDeleteItem = (id: Item["id"]) => {
+    setItems(items.filter((item) => item.id !== id));
   };
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItem={handleAddItem} />
-      <PackingList items={items} />
+      <PackingList onDeleteItem={handleDeleteItem} items={items} />
       <Stats />
     </div>
   );
