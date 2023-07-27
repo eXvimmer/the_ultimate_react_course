@@ -6,12 +6,14 @@ interface PackingListProps {
   items: ItemType[];
   onDeleteItem(id: ItemType["id"]): void;
   onToggleItem(id: ItemType["id"]): void;
+  onClearList(): void;
 }
 
 const PackingList: React.FC<PackingListProps> = ({
   items,
   onDeleteItem,
   onToggleItem,
+  onClearList,
 }) => {
   const [sortBy, setSortBy] = useState("input");
 
@@ -49,6 +51,7 @@ const PackingList: React.FC<PackingListProps> = ({
           <option value="description">Sort by description</option>
           <option value="packed">Sort by packed status</option>
         </select>
+        <button onClick={onClearList}>Clear list</button>
       </div>
     </div>
   );
