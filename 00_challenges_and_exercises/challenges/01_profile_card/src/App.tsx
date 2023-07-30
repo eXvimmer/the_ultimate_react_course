@@ -2,27 +2,37 @@ import Avatar from "./components/Avatar";
 import img from "./cat.jpg";
 import Intro from "./components/Intro";
 import SkillList from "./components/SkillList";
+import { Level } from "./components/Skill";
 
 const skills = [
-  { skill: "HTML + CSS", emoji: "💪", color: "#E0F116" },
-  { skill: "JavaScript", emoji: "💪", color: "#70E61C" },
-  { skill: "TypeScript", emoji: "💪", color: "#0895EE" },
-  { skill: "Go", emoji: "🚀", color: "#73AAF7" },
-  { skill: "C++", emoji: "😉", color: "#17C9AC" },
-  { skill: "Python", emoji: "😎", color: "#EB1EE1" },
-  { skill: "React", emoji: "💪", color: "#E81070" },
-  { skill: "SDL", emoji: "💣", color: "#BE31FA" },
-  { skill: "OpenGL", emoji: "🚀", color: "#17C9AC" },
+  { level: Level.advanced, skill: "TypeScript", color: "#0895EE" },
+  { level: Level.advanced, skill: "JavaScript", color: "#70E61C" },
+  { level: Level.advanced, skill: "React", color: "#E81070" },
+  { level: Level.advanced, skill: "ExpressJS", color: "#70E61C" },
+  { level: Level.intermediate, skill: "C++", color: "#17C9AC" },
+  { level: Level.advanced, skill: "HTML + CSS", color: "#E0F116" },
+  { level: Level.intermediate, skill: "Go", color: "#73AAF7" },
+  { level: Level.intermediate, skill: "NodeJS", color: "#E0F116" },
+  {
+    level: Level.intermediate,
+    skill: "SQL/NoSQL",
+    emoji: "😉",
+    color: "#BE31FA",
+  },
+  { level: Level.intermediate, skill: "Python", emoji: "😎", color: "#EB1EE1" },
+  { level: Level.beginner, skill: "SDL", emoji: "💣", color: "#BE31FA" },
+  { level: Level.beginner, skill: "OpenGL", emoji: "🚀", color: "#17C9AC" },
 ];
 
-const bio = `I'm a web/indie game developer. I like creating beautiful softwares using bare minimum technologies and contributing to open source community by creating free software or writing articles about new technologies. Currentlly, I'm working in Google, and I try to finish my third indie game while I'm at home. You can visit my personal website at hayati.dev`;
+const name = "Mustafa Hayati";
+const bio = `I am a web and indie game developer who enjoys creating beautiful software using the bare minimum technologies. Additionally, I contribute to the open-source community by creating free software and writing articles about new technologies. Currently, I am employed at Google and working on my third indie game in my spare time. You can visit my personal website at hayati.dev.`;
 
 function App() {
   return (
     <div className="card">
-      <Avatar img={img} />
+      <Avatar img={img} alt={name} />
       <div className="data">
-        <Intro name="Mustafa Hayati" bio={bio} />
+        <Intro name={name} bio={bio} />
         <SkillList skills={skills} />
       </div>
     </div>

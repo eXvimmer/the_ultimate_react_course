@@ -1,13 +1,35 @@
-export interface SkillProps {
-  skill: string;
-  emoji: string;
-  color: string;
+export enum Level {
+  beginner,
+  intermediate,
+  advanced,
 }
 
-function Skill({ skill, color, emoji }: SkillProps) {
+export interface SkillProps {
+  skill: string;
+  color: string;
+  level: Level;
+}
+
+function Skill({ skill, color, level }: SkillProps) {
+  let emoji = "";
+  switch (level) {
+    case Level.beginner:
+      emoji = "😅";
+      break;
+    case Level.intermediate:
+      emoji = "💪";
+      break;
+    case Level.advanced:
+      emoji = "🚀";
+      break;
+    default:
+      throw new Error("invalid skill level");
+  }
+
   return (
     <div className="skill" style={{ backgroundColor: color }}>
-      {skill} {emoji}
+      <span>{skill}</span>
+      <span>{emoji}</span>
     </div>
   );
 }
