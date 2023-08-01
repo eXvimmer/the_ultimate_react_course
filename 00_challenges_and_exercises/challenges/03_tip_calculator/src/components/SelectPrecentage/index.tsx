@@ -1,7 +1,7 @@
 interface SelectPercentageProps {
   value: number;
   who: string;
-  onPercentageChange(who: string, num: number): void;
+  onPercentageChange: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function SelectPercentage({
@@ -18,7 +18,7 @@ function SelectPercentage({
         id={`selectPercentage-${who}`}
         name={who}
         value={value}
-        onChange={(e) => onPercentageChange(who, parseInt(e.target.value))}
+        onChange={(e) => onPercentageChange(parseInt(e.target.value))}
       >
         <option value="0">Dissatisfied (0%)</option>
         <option value="5">It was okay (5%)</option>

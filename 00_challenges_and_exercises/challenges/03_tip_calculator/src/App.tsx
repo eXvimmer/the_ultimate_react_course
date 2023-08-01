@@ -13,14 +13,6 @@ function App() {
     setBillValue(num);
   };
 
-  const handlePercentageChange = (who: string, num: number) => {
-    if (who === "you") {
-      setYouPercentage(num);
-    } else {
-      setOtherPercentage(num);
-    }
-  };
-
   const handleReset = () => {
     setBillValue(0);
     setYouPercentage(0);
@@ -33,12 +25,12 @@ function App() {
       <SelectPercentage
         value={youPercentage}
         who="you"
-        onPercentageChange={handlePercentageChange}
+        onPercentageChange={setYouPercentage}
       />
       <SelectPercentage
         value={otherPercentage}
         who="your friend"
-        onPercentageChange={handlePercentageChange}
+        onPercentageChange={setOtherPercentage}
       />
       {billValue > 0 && (
         <>
