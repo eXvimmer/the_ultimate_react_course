@@ -1,3 +1,5 @@
+import Button from "../../Button";
+
 export interface FriendType {
   id: number;
   name: string;
@@ -21,7 +23,7 @@ function Friend({ friend: { image, balance, name } }: { friend: FriendType }) {
       ) : (
         <p>You and {name} are even</p>
       )}
-      <button className="button">Select</button>
+      <Button>Select</Button>
     </li>
   );
 }

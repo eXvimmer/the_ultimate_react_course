@@ -42,6 +42,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
+  text-align: center;
 }
 
 .button:hover {
@@ -62,6 +63,7 @@ body {
   grid-template-columns: 4.8rem 1fr auto;
   align-items: center;
   column-gap: 1.6rem;
+
   padding: 1.2rem;
   border-radius: 7px;
   transition: 0.5s;
