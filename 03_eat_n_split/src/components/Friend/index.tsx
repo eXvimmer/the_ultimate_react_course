@@ -1,7 +1,7 @@
 import Button from "../../Button";
 
 export interface FriendType {
-  id: number;
+  id: string | number;
   name: string;
   image: string;
   balance: number;
