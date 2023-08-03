@@ -7,9 +7,18 @@ export interface FriendType {
   balance: number;
 }
 
-function Friend({ friend: { image, balance, name } }: { friend: FriendType }) {
+interface FriendProps {
+  friend: FriendType;
+  onSelectFriend(friend: FriendType): void;
+  selectedId?: number | string;
+}
+
+function Friend({ friend, onSelectFriend, selectedId }: FriendProps) {
+  const { image, balance, name } = friend;
+  const isSelected = selectedId === friend.id;
+
   return (
-    <li>
+    <li className={`${isSelected ? "selected" : ""}`}>
       <img src={image} alt={name} />
       <h3>{name}</h3>
       {balance < 0 ? (
@@ -23,7 +32,9 @@ function Friend({ friend: { image, balance, name } }: { friend: FriendType }) {
       ) : (
         <p>You and {name} are even</p>
       )}
-      <Button>Select</Button>
+      <Button onClick={() => onSelectFriend(friend)}>
+        {isSelected ? "Close" : "Select"}
+      </Button>
     </li>
   );
 }
