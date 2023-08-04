@@ -7,10 +7,23 @@ interface FormSplitBillProps {
 }
 
 function FormSplitBill({ friend }: FormSplitBillProps) {
-  const [bill, setBill] = useState(0);
-  const [userExpense, setUserExpense] = useState(0);
+  const [bill, setBill] = useState<number | "">(0);
+  const [userExpense, setUserExpense] = useState<number | "">(0);
   const [whoIsPaying, setWhoIsPaying] = useState("user");
-  const friendsExpense = bill > 0 ? bill - userExpense : 0;
+  const friendsExpense =
+    bill !== "" && bill > 0 ? bill - (userExpense !== "" ? userExpense : 0) : 0;
+
+  const handleBillChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setBill(Number.isNaN(value) ? "" : value);
+  };
+
+  const handleUserExpenseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setUserExpense(
+      Number.isNaN(value) ? "" : value > +bill ? userExpense : value
+    );
+  };
 
   return (
     <form className="form-split-bill">
@@ -21,19 +34,14 @@ function FormSplitBill({ friend }: FormSplitBillProps) {
         id="bill-value"
         value={bill}
         min={0}
-        onChange={(e) => {
-          setBill(parseFloat(e.target.value));
-        }}
+        onChange={handleBillChange}
       />
       <label htmlFor="user-expense">🎅 Your expense</label>
       <input
         type="number"
         id="user-expense"
         value={userExpense}
-        onChange={(e) => {
-          const v = parseFloat(e.target.value);
-          setUserExpense(v > bill ? userExpense : v);
-        }}
+        onChange={handleUserExpenseChange}
       />
       <label htmlFor="friends-expense">👭 {friend.name}'s expense</label>
       <input
