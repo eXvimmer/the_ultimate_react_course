@@ -4,9 +4,10 @@ import { FriendType } from "../Friend";
 
 interface FormSplitBillProps {
   friend: FriendType;
+  onSplitBill(value: number): void;
 }
 
-function FormSplitBill({ friend }: FormSplitBillProps) {
+function FormSplitBill({ friend, onSplitBill }: FormSplitBillProps) {
   const [bill, setBill] = useState<number | "">(0);
   const [userExpense, setUserExpense] = useState<number | "">(0);
   const [whoIsPaying, setWhoIsPaying] = useState("user");
@@ -25,8 +26,16 @@ function FormSplitBill({ friend }: FormSplitBillProps) {
     );
   };
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (!bill || !userExpense) {
+      return;
+    }
+    onSplitBill(whoIsPaying === "user" ? friendsExpense : -userExpense);
+  };
+
   return (
-    <form className="form-split-bill">
+    <form className="form-split-bill" onSubmit={handleSubmit}>
       <h2>Split a bill with {friend.name}</h2>
       <label htmlFor="bill-value">💰 Bill Value</label>
       <input
