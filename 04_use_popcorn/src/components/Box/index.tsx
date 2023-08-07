@@ -1,11 +1,11 @@
 import { ReactNode, useState } from "react";
 import ToggleButton from "../ToggleButton";
 
-interface ListBoxProps {
+interface BoxProps {
   children: ReactNode;
 }
 
-function ListBox({ children }: ListBoxProps) {
+function Box({ children }: BoxProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -16,4 +16,4 @@ function ListBox({ children }: ListBoxProps) {
   );
 }
 
-export default ListBox;
+export default Box;
