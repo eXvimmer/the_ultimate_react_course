@@ -1,19 +1,17 @@
-import { useState } from "react";
-import { iMovie } from "../../types";
-import MovieList from "../MovieList";
+import { ReactNode, useState } from "react";
 import ToggleButton from "../ToggleButton";
 
 interface ListBoxProps {
-  movies: iMovie[];
+  children: ReactNode;
 }
 
-function ListBox({ movies }: ListBoxProps) {
+function ListBox({ children }: ListBoxProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="box">
       <ToggleButton isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)} />
-      {isOpen && <MovieList movies={movies} />}
+      {isOpen && children}
     </div>
   );
 }

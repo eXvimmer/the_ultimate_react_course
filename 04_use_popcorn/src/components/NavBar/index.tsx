@@ -1,18 +1,14 @@
-import { iMovie } from "../../types";
+import { ReactNode } from "react";
 import Logo from "../Logo";
-import NumResults from "../NumResults";
-import Search from "../Search";
-
 interface NavBarProps {
-  movies: iMovie[];
+  children: ReactNode;
 }
 
-function NavBar({ movies }: NavBarProps) {
+function NavBar({ children }: NavBarProps) {
   return (
     <nav className="nav-bar">
       <Logo />
-      <Search />
-      <NumResults movies={movies} />
+      {children}
     </nav>
   );
 }

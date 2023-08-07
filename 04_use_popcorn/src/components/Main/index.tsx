@@ -1,18 +1,11 @@
-import { iMovie } from "../../types";
-import ListBox from "../ListBox";
-import WatchedBox from "../WatchedBox";
+import { ReactNode } from "react";
 
 interface MainProps {
-  movies: iMovie[];
+  children: ReactNode;
 }
 
-function Main({ movies }: MainProps) {
-  return (
-    <main className="main">
-      <ListBox movies={movies} />
-      <WatchedBox />
-    </main>
-  );
+function Main({ children }: MainProps) {
+  return <main className="main">{children}</main>;
 }
 
 export default Main;
