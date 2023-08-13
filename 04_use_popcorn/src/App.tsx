@@ -8,6 +8,7 @@ import MovieList from "./components/MovieList";
 import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import WatchedMoviesList from "./components/WatchedMoviesList";
+import StarRating from "./components/StarRating";
 
 export default function App() {
   const [movies] = useState(tempMovieData);
@@ -22,6 +23,7 @@ export default function App() {
       <Main>
         <Box>
           <MovieList movies={movies} />
+          <StarRating maxRating={5} />
         </Box>
 
         <Box>
