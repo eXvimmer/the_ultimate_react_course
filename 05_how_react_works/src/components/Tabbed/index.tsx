@@ -17,7 +17,10 @@ function Tabbed({ content }: { content: Content[] }) {
       </div>
 
       {activeTab <= 2 ? (
-        <TabContent item={content[activeTab]} />
+        <TabContent
+          item={content[activeTab]}
+          key={content[activeTab].summary}
+        />
       ) : (
         <DifferentContent />
       )}
