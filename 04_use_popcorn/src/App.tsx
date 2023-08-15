@@ -8,40 +8,33 @@ import MovieList from "./components/MovieList";
 import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import WatchedMoviesList from "./components/WatchedMoviesList";
+import ErrorMessage from "./components/ErrorMessage";
+import Loader from "./components/Loader";
 
 const address = `https://www.omdbapi.com/?i=tt3896198&apikey=ae139676`;
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
-
-function ErrorMessage({ message }: { message: string }) {
-  return (
-    <p className="error">
-      <span>⛔</span> {message}
-    </p>
-  );
-}
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const query = "sdlkaj";
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    async function fetchMovies() {
+    let timeoutId: number | undefined;
+
+    const fetchMovies = async () => {
       try {
         setIsLoading(true);
         setError("");
-        const res = await fetch(address + `&s=${query}`);
+        const encodedQuery = encodeURIComponent(query);
+        const res = await fetch(address + `&s=${encodedQuery}`);
         if (!res.ok) {
-          throw new Error("failed to fetch movies");
+          throw new Error("Failed to fetch movies");
         }
         const data = await res.json();
         if (data.Response === "False") {
-          throw new Error("movie not found");
+          throw new Error("Movie not found");
         }
         setMovies(data.Search);
         setError("");
@@ -51,14 +44,30 @@ export default function App() {
       } finally {
         setIsLoading(false);
       }
-    }
-    fetchMovies();
-  }, []);
+    };
+
+    const debounceFetchMovies = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (query) {
+          fetchMovies();
+        }
+      }, 1000); // Debounce time: 1 second
+    };
+
+    debounceFetchMovies();
+
+    return () => {
+      // Clear the timeout if the component unmounts or the `query` changes
+      // before the debounce time elapses
+      clearTimeout(timeoutId);
+    };
+  }, [query]);
 
   return (
     <>
       <NavBar>
-        <Search />
+        <Search query={query} onSetQuery={setQuery} />
         <NumResults movies={movies} />
       </NavBar>
       <Main>
