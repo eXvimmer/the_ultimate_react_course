@@ -12,7 +12,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import Loader from "./components/Loader";
 import MovieDetails from "./components/MovieDetails";
 
-const address = `https://www.omdbapi.com/?i=tt3896198&apikey=ae139676`;
+const address = `https://www.omdbapi.com/?apikey=ae139676`;
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
