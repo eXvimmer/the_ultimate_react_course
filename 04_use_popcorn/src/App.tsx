@@ -1,7 +1,7 @@
 import NavBar from "./components/NavBar";
 import Main from "./components/Main";
 import { tempMovieData, tempWatchedData } from "./data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "./components/Search";
 import NumResults from "./components/NumResults";
 import MovieList from "./components/MovieList";
@@ -10,9 +10,17 @@ import WatchedSummary from "./components/WatchedSummary";
 import WatchedMoviesList from "./components/WatchedMoviesList";
 import StarRating from "./components/StarRating";
 
+const address = `https://www.omdbapi.com/?i=tt3896198&apikey=ae139676`;
+
 export default function App() {
-  const [movies] = useState(tempMovieData);
+  const [movies, setMovies] = useState(tempMovieData);
   const [watched] = useState(tempWatchedData);
+
+  useEffect(() => {
+    fetch(address + `&s=interstellar`)
+      .then((res) => res.json())
+      .then((data) => setMovies(data.Search));
+  }, []);
 
   return (
     <>
