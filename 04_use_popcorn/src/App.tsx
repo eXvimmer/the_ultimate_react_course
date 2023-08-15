@@ -15,22 +15,39 @@ function Loader() {
   return <p className="loader">Loading...</p>;
 }
 
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <p className="error">
+      <span>⛔</span> {message}
+    </p>
+  );
+}
+
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
-  const query = "interstellar";
+  const [error, setError] = useState("");
+  const query = "sdlkaj";
 
   useEffect(() => {
     async function fetchMovies() {
       try {
         setIsLoading(true);
+        setError("");
         const res = await fetch(address + `&s=${query}`);
+        if (!res.ok) {
+          throw new Error("failed to fetch movies");
+        }
         const data = await res.json();
+        if (data.Response === "False") {
+          throw new Error("movie not found");
+        }
         setMovies(data.Search);
-      } catch {
-        console.log("Oops!");
-        // TODO: show error component
+        setError("");
+      } catch (err) {
+        console.error(err);
+        setError((err as Error).message);
       } finally {
         setIsLoading(false);
       }
@@ -45,7 +62,15 @@ export default function App() {
         <NumResults movies={movies} />
       </NavBar>
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : (
+            <MovieList movies={movies} />
+          )}
+        </Box>
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMoviesList watched={watched} />
