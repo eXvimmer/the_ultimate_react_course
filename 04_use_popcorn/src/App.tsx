@@ -15,11 +15,15 @@ const address = `https://www.omdbapi.com/?i=tt3896198&apikey=ae139676`;
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched] = useState(tempWatchedData);
+  const query = "interstellar";
 
   useEffect(() => {
-    fetch(address + `&s=interstellar`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
+    async function fetchMovies() {
+      const res = await fetch(address + `&s=${query}`);
+      const data = await res.json();
+      setMovies(data.Search);
+    }
+    fetchMovies();
   }, []);
 
   return (
