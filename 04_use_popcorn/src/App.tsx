@@ -10,6 +10,7 @@ import WatchedSummary from "./components/WatchedSummary";
 import WatchedMoviesList from "./components/WatchedMoviesList";
 import ErrorMessage from "./components/ErrorMessage";
 import Loader from "./components/Loader";
+import MovieDetails from "./components/MovieDetails";
 
 const address = `https://www.omdbapi.com/?i=tt3896198&apikey=ae139676`;
 
@@ -19,6 +20,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState("");
 
   useEffect(() => {
     let timeoutId: number | undefined;
@@ -64,6 +66,14 @@ export default function App() {
     };
   }, [query]);
 
+  function handleMovieSelect(id: string) {
+    setSelectedId(id);
+  }
+
+  function handleMovieUnSelect() {
+    setSelectedId("");
+  }
+
   return (
     <>
       <NavBar>
@@ -77,12 +87,21 @@ export default function App() {
           ) : error ? (
             <ErrorMessage message={error} />
           ) : (
-            <MovieList movies={movies} />
+            <MovieList onMovieSelect={handleMovieSelect} movies={movies} />
           )}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
+          {selectedId ? (
+            <MovieDetails
+              id={selectedId}
+              onMovieUnSelect={handleMovieUnSelect}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
