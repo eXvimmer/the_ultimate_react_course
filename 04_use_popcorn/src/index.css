@@ -141,6 +141,10 @@ body {
   overflow: scroll;
 }
 
+.list:hover {
+  cursor: pointer;
+}
+
 .list-watched {
   height: calc(100% - 9rem);
 }

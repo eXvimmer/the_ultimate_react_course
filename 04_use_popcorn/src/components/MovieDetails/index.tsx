@@ -50,6 +50,14 @@ function MovieDetails({
     getMovieDetails();
   }, [id]);
 
+  useEffect(() => {
+    document.title = movie?.Title ? `Movie | ${movie.Title}` : "usePopcorn";
+
+    return () => {
+      document.title = "usePopcorn";
+    };
+  }, [movie?.Title]);
+
   if (isLoading) {
     return <Loader />;
   } else if (error) {
