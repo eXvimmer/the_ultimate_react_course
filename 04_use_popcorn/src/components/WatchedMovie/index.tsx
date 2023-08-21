@@ -1,10 +1,11 @@
-import { iWatchData } from "../../types";
+import { iWatchedMovie } from "../../types";
 
 interface WatchedMovieProps {
-  movie: iWatchData;
+  movie: iWatchedMovie;
+  onRemoveWatched(id: string): void;
 }
 
-function WatchedMovie({ movie }: WatchedMovieProps) {
+function WatchedMovie({ movie, onRemoveWatched }: WatchedMovieProps) {
   return (
     <li key={movie.imdbID}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -20,8 +21,14 @@ function WatchedMovie({ movie }: WatchedMovieProps) {
         </p>
         <p>
           <span>⏳</span>
-          <span>{movie.runtime} min</span>
+          <span>{movie.Runtime}</span>
         </p>
+        <button
+          className="btn-delete"
+          onClick={() => onRemoveWatched(movie.imdbID)}
+        >
+          X
+        </button>
       </div>
     </li>
   );

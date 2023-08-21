@@ -1,14 +1,26 @@
-import { iWatchData } from "../../types";
+import { iWatchedMovie } from "../../types";
 import { average } from "../../utils";
 
 interface SummaryProps {
-  watched: iWatchData[];
+  watched: iWatchedMovie[];
 }
 
 function WatchedSummary({ watched }: SummaryProps) {
-  const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
-  const avgUserRating = average(watched.map((movie) => movie.userRating));
-  const avgRuntime = average(watched.map((movie) => movie.runtime));
+  const avgImdbRating = average(
+    watched.map((movie) =>
+      movie.imdbRating ? parseFloat(movie.imdbRating) : 0
+    )
+  );
+  const avgUserRating = average(
+    watched.map((movie) =>
+      movie.userRating ? parseFloat(movie.userRating) : 0
+    )
+  );
+
+  // NOTE: average runtime is kinda weird
+  const avgRuntime = average(
+    watched.map((movie) => (movie.Runtime ? parseFloat(movie.Runtime) : 0))
+  );
 
   return (
     <div className="summary">
@@ -20,15 +32,15 @@ function WatchedSummary({ watched }: SummaryProps) {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(2)}</span>
         </p>
         <p>
           <span>⏳</span>
-          <span>{avgRuntime} min</span>
+          <span>{avgRuntime.toFixed(2)} min</span>
         </p>
       </div>
     </div>

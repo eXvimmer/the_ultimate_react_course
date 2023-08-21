@@ -1,6 +1,5 @@
 import NavBar from "./components/NavBar";
 import Main from "./components/Main";
-import { tempMovieData, tempWatchedData } from "./data";
 import { useEffect, useState } from "react";
 import Search from "./components/Search";
 import NumResults from "./components/NumResults";
@@ -11,12 +10,13 @@ import WatchedMoviesList from "./components/WatchedMoviesList";
 import ErrorMessage from "./components/ErrorMessage";
 import Loader from "./components/Loader";
 import MovieDetails from "./components/MovieDetails";
+import { iWatchedMovie } from "./types";
 
 const address = `https://www.omdbapi.com/?apikey=ae139676`;
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState<iWatchedMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
@@ -74,6 +74,14 @@ export default function App() {
     setSelectedId("");
   }
 
+  function handleAddWatched(movie: iWatchedMovie) {
+    setWatched([...watched, movie]);
+  }
+
+  function handleRemoveWatched(id: string) {
+    setWatched(watched.filter((m) => m.imdbID !== id));
+  }
+
   return (
     <>
       <NavBar>
@@ -95,11 +103,16 @@ export default function App() {
             <MovieDetails
               id={selectedId}
               onMovieUnSelect={handleMovieUnSelect}
+              onAddWatched={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMoviesList watched={watched} />
+              <WatchedMoviesList
+                watched={watched}
+                onRemoveWatched={handleRemoveWatched}
+              />
             </>
           )}
         </Box>

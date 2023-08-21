@@ -2,55 +2,28 @@ import { useEffect, useState } from "react";
 import StarRating from "../StarRating";
 import Loader from "../Loader";
 import ErrorMessage from "../ErrorMessage";
+import { iFetchedMovie, iWatchedMovie } from "../../types";
 
 interface MovieDetails {
   id: string;
   onMovieUnSelect(): void;
-}
-
-interface iFetchedMovie {
-  Title: string;
-  // Year: string;
-  Poster: string;
-  Runtime: string;
-  Plot: string;
-  Released: string;
-  Actors: string;
-  Director: string;
-  Genre: string;
-  imdbRating: string;
+  onAddWatched(mvoie: iWatchedMovie): void;
+  watched: iWatchedMovie[];
 }
 
 const address = `https://www.omdbapi.com/?apikey=ae139676`;
 
-function MovieDetails({ id, onMovieUnSelect }: MovieDetails) {
-  const [
-    {
-      Title,
-      Poster,
-      Runtime,
-      Released,
-      Genre,
-      imdbRating,
-      Plot,
-      Actors,
-      Director,
-    },
-    setMovie,
-  ] = useState<iFetchedMovie>({
-    Title: "",
-    // Year: "",
-    Poster: "",
-    Runtime: "",
-    Plot: "",
-    Released: "",
-    Actors: "",
-    Director: "",
-    Genre: "",
-    imdbRating: "",
-  });
+function MovieDetails({
+  id,
+  onMovieUnSelect,
+  onAddWatched,
+  watched,
+}: MovieDetails) {
+  const [movie, setMovie] = useState<iFetchedMovie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [userRating, setUserRating] = useState(0);
+  const watchedIDs = watched.map((w) => w.imdbID);
 
   useEffect(() => {
     async function getMovieDetails() {
@@ -60,7 +33,7 @@ function MovieDetails({ id, onMovieUnSelect }: MovieDetails) {
         if (!res.ok) {
           throw new Error("Failed to fetch movies");
         }
-        const data = await res.json();
+        const data: iFetchedMovie = await res.json();
         if (data.Response === "False") {
           throw new Error("Movie not found");
         }
@@ -77,13 +50,29 @@ function MovieDetails({ id, onMovieUnSelect }: MovieDetails) {
     getMovieDetails();
   }, [id]);
 
+  if (isLoading) {
+    return <Loader />;
+  } else if (error) {
+    return <ErrorMessage message={error} />;
+  } else if (!movie) {
+    return;
+  }
+
+  const {
+    Title,
+    Poster,
+    Runtime,
+    Released,
+    Genre,
+    imdbRating,
+    Plot,
+    Actors,
+    Director,
+  } = movie;
+
   return (
     <div className="details">
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <ErrorMessage message={error} />
-      ) : (
+      {
         <>
           <header>
             <button className="btn-back" onClick={onMovieUnSelect}>
@@ -104,7 +93,31 @@ function MovieDetails({ id, onMovieUnSelect }: MovieDetails) {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              {!watchedIDs.includes(id) ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button
+                      className="btn-add"
+                      onClick={() => {
+                        onAddWatched({
+                          ...movie,
+                          userRating: userRating.toString(),
+                        });
+                        onMovieUnSelect();
+                      }}
+                    >
+                      + Add to List
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>You've already rated this item!</p>
+              )}
             </div>
             <p>
               <em>{Plot}</em>
@@ -113,7 +126,7 @@ function MovieDetails({ id, onMovieUnSelect }: MovieDetails) {
             <p>Directed by {Director}</p>
           </section>
         </>
-      )}
+      }
     </div>
   );
 }
