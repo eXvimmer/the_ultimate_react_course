@@ -52,12 +52,17 @@ export default function App() {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         if (query) {
+          handleMovieUnSelect();
           fetchMovies();
         }
       }, 1000); // Debounce time: 1 second
     };
 
     debounceFetchMovies();
+    // NOTE: instead of debouncing, we could've used the native AbortController
+    // and pass an object as the second argument to the fetch API and set the
+    // signal to the result of new AbortController, and in the clean up
+    // function of the useEffect we could've called the controller.abort.
 
     return () => {
       // Clear the timeout if the component unmounts or the `query` changes

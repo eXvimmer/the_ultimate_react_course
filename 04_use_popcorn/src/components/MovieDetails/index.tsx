@@ -26,6 +26,20 @@ function MovieDetails({
   const watchedIDs = watched.map((w) => w.imdbID);
 
   useEffect(() => {
+    function callback(e: KeyboardEvent) {
+      if (e.code === "Escape") {
+        onMovieUnSelect();
+      }
+    }
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [onMovieUnSelect]);
+
+  useEffect(() => {
     async function getMovieDetails() {
       try {
         setIsLoading(true);
