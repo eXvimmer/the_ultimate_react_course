@@ -30,7 +30,10 @@ function WatchedMovie({
         </p>
         <button
           className="btn-delete"
-          onClick={() => onRemoveWatched(movie.imdbID)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemoveWatched(movie.imdbID);
+          }}
         >
           X
         </button>

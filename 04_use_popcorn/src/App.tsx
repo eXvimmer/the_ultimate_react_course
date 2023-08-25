@@ -16,7 +16,10 @@ const address = `https://www.omdbapi.com/?apikey=ae139676`;
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState<iWatchedMovie[]>([]);
+  const [watched, setWatched] = useState<iWatchedMovie[]>(() => {
+    const item = localStorage.getItem("watched");
+    return item ? JSON.parse(item) : [];
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
@@ -70,6 +73,10 @@ export default function App() {
       clearTimeout(timeoutId);
     };
   }, [query]);
+
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   function handleMovieSelect(id: string) {
     setSelectedId(id);
