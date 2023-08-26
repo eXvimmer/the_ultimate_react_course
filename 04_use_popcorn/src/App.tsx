@@ -11,20 +11,19 @@ import ErrorMessage from "./components/ErrorMessage";
 import Loader from "./components/Loader";
 import MovieDetails from "./components/MovieDetails";
 import { iWatchedMovie } from "./types";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 const address = `https://www.omdbapi.com/?apikey=ae139676`;
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState<iWatchedMovie[]>(() => {
-    const item = localStorage.getItem("watched");
-    return item ? JSON.parse(item) : [];
-  });
+  const [watched, setWatched] = useLocalStorage<iWatchedMovie[]>([], "watched");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState("");
 
+  // TODO: extract this to a useMovies custom hook
   useEffect(() => {
     let timeoutId: number | undefined;
 
