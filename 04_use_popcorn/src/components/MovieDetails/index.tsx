@@ -3,6 +3,7 @@ import StarRating from "../StarRating";
 import Loader from "../Loader";
 import ErrorMessage from "../ErrorMessage";
 import { iFetchedMovie, iWatchedMovie } from "../../types";
+import { useKey } from "../../hooks/useKey";
 
 interface MovieDetails {
   id: string;
@@ -25,19 +26,7 @@ function MovieDetails({
   const [userRating, setUserRating] = useState(0);
   const watchedIDs = watched.map((w) => w.imdbID);
 
-  useEffect(() => {
-    function callback(e: KeyboardEvent) {
-      if (e.code === "Escape") {
-        onMovieUnSelect();
-      }
-    }
-
-    document.addEventListener("keydown", callback);
-
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [onMovieUnSelect]);
+  useKey("Escape", onMovieUnSelect);
 
   useEffect(() => {
     async function getMovieDetails() {
