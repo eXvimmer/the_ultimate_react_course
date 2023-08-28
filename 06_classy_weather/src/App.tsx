@@ -1,47 +1,6 @@
 import { ChangeEvent, Component, ReactNode /*, MouseEvent */ } from "react";
-
-interface GeoResult {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  elevation: number;
-  feature_code: string;
-  country_code: string;
-  admin1_id: number;
-  timezone: string;
-  population: number;
-  country_id: number;
-  country: string;
-  admin1: string;
-}
-
-interface iGeoData {
-  results: GeoResult[];
-  generationtime_ms: number;
-}
-
-interface iWeatherData {
-  latitude: number;
-  longitude: number;
-  generationtime_ms: number;
-  utc_offset_seconds: number;
-  timezone: string;
-  timezone_abbreviation: string;
-  elevation: number;
-  daily_units: {
-    time: string;
-    weathercode: string;
-    temperature_2m_max: string;
-    temperature_2m_min: string;
-  };
-  daily: {
-    time: string[];
-    weathercode: number[];
-    temperature_2m_max: number[];
-    temperature_2m_min: number[];
-  };
-}
+import Weather from "./components/Weather";
+import { iGeoData, iWeatherData } from "./types";
 
 interface AppState {
   location: string;
@@ -110,13 +69,14 @@ class App extends Component<unknown, AppState> {
       this.setState({ weather: weatherData.daily });
     } catch (err) {
       console.error(err);
+      this.setState({ weather: undefined, displayLocation: "" });
     } finally {
       this.setState({ isLoading: false });
     }
   }
 
   render(): ReactNode {
-    const { location, isLoading } = this.state;
+    const { location, isLoading, weather, displayLocation } = this.state;
 
     return (
       <div className="app">
@@ -132,6 +92,10 @@ class App extends Component<unknown, AppState> {
         </div>
         <button onClick={this.fetchWeather}>Get Weather</button>
         {isLoading && <p className="loader">loading...</p>}
+
+        {weather && (
+          <Weather displayLocation={displayLocation} weather={weather} />
+        )}
       </div>
     );
   }
