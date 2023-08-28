@@ -1,37 +1,47 @@
-import { Component } from "react";
+import { ChangeEvent, Component, ReactNode, MouseEvent } from "react";
 
-class DateCounter extends Component<unknown, { count: number }> {
+class App extends Component<unknown, { location: string }> {
   constructor(props: unknown) {
     super(props);
+
     this.state = {
-      count: 0,
+      location: "",
     };
 
-    this.handleDecrement = this.handleDecrement.bind(this);
-    this.handleIncrement = this.handleIncrement.bind(this);
+    this.handleLocationChange = this.handleLocationChange.bind(this);
+    this.fetchWeather = this.fetchWeather.bind(this);
   }
 
-  handleDecrement() {
-    this.setState((prev) => ({ count: prev.count - 1 }));
+  handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      location: e.target.value,
+    });
   }
 
-  handleIncrement() {
-    this.setState((prev) => ({ count: prev.count + 1 }));
+  fetchWeather(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    // TODO: fetch weather data
   }
 
-  render() {
-    const { count } = this.state;
-    const date = new Date();
-    date.setDate(date.getDate() + count);
+  render(): ReactNode {
+    const { location } = this.state;
 
     return (
-      <div>
-        <button onClick={this.handleDecrement}>-</button>
-        <span>{date.toDateString()}</span>
-        <button onClick={this.handleIncrement}>+</button>
+      <div className="app">
+        <h1>Classy Weather</h1>
+        <div>
+          <input
+            type="text"
+            placeholder="e.g. Tokyo"
+            autoFocus
+            value={location}
+            onChange={this.handleLocationChange}
+          />
+        </div>
+        <button onClick={this.fetchWeather}>Get Weather</button>
       </div>
     );
   }
 }
 
-export default DateCounter;
+export default App;
