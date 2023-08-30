@@ -18,27 +18,20 @@ function convertToFlag(countryCode: string) {
 }
 
 class App extends Component<unknown, AppState> {
-  constructor(props: unknown) {
-    super(props);
+  state = {
+    location: "",
+    isLoading: false,
+    displayLocation: "",
+    weather: undefined,
+  };
 
-    this.state = {
-      location: "",
-      isLoading: false,
-      displayLocation: "",
-      weather: undefined,
-    };
-
-    this.handleLocationChange = this.handleLocationChange.bind(this);
-    this.fetchWeather = this.fetchWeather.bind(this);
-  }
-
-  handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+  handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
     this.setState({
       location: e.target.value,
     });
-  }
+  };
 
-  async fetchWeather(/* e: MouseEvent<HTMLButtonElement> */) {
+  fetchWeather = async (/* e: MouseEvent<HTMLButtonElement> */) => {
     const { location } = this.state;
     if (!location) {
       return;
@@ -73,7 +66,7 @@ class App extends Component<unknown, AppState> {
     } finally {
       this.setState({ isLoading: false });
     }
-  }
+  };
 
   render(): ReactNode {
     const { location, isLoading, weather, displayLocation } = this.state;
