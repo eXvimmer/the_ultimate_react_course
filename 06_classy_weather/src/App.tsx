@@ -24,6 +24,27 @@ class App extends Component<unknown, AppState> {
     displayLocation: "",
     weather: undefined,
   };
+  // NOTE: because this is not part of the state, it won't cause any re-renders
+  fetchWeatherTimeout = 0;
+
+  componentDidMount(): void {
+    this.setState({
+      location: localStorage.getItem("classyWeatherLocation") || "",
+    });
+  }
+
+  componentDidUpdate(
+    _: Readonly<unknown>,
+    prevState: Readonly<AppState>
+  ): void {
+    if (this.state.location !== prevState.location) {
+      clearTimeout(this.fetchWeatherTimeout);
+      this.fetchWeatherTimeout = setTimeout(() => {
+        this.fetchWeather();
+        localStorage.setItem("classyWeatherLocation", this.state.location);
+      }, 1000);
+    }
+  }
 
   handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -33,7 +54,8 @@ class App extends Component<unknown, AppState> {
 
   fetchWeather = async (/* e: MouseEvent<HTMLButtonElement> */) => {
     const { location } = this.state;
-    if (!location) {
+    if (location.length < 2) {
+      this.setState({ weather: undefined });
       return;
     }
     try {
@@ -83,7 +105,6 @@ class App extends Component<unknown, AppState> {
             onChange={this.handleLocationChange}
           />
         </div>
-        <button onClick={this.fetchWeather}>Get Weather</button>
         {isLoading && <p className="loader">loading...</p>}
 
         {weather && (
