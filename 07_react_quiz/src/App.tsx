@@ -25,24 +25,30 @@ enum ActionType {
   DATA_RECEIVED,
   DATA_FAILED,
   START,
+  NEW_ANSWER,
 }
 
 type Action =
   | { type: ActionType.DATA_LOADING }
   | { type: ActionType.DATA_RECEIVED; payload: iQuestion[] }
   | { type: ActionType.DATA_FAILED }
-  | { type: ActionType.START };
+  | { type: ActionType.START }
+  | { type: ActionType.NEW_ANSWER; payload: number };
 
 interface AppState {
   questions: iQuestion[];
   status: Status;
   index: number;
+  answer: number;
+  points: number;
 }
 
 const initialState: AppState = {
   questions: [],
   status: Status.LOADING,
   index: 0,
+  answer: NaN, // NaN instead of null, means no answer
+  points: 0,
 };
 
 const reducer: Reducer<AppState, Action> = (s, a) => {
@@ -55,13 +61,24 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
       return { ...s, questions: [], status: Status.ERROR };
     case ActionType.START:
       return { ...s, status: Status.ACTIVE };
+    case ActionType.NEW_ANSWER: {
+      const question = s.questions[s.index];
+      return {
+        ...s,
+        answer: a.payload,
+        points:
+          a.payload /* AKA: the answer */ === question.correctOption
+            ? s.points + question.points
+            : s.points,
+      };
+    }
     default:
       throw new Error("unknown action type for App");
   }
 };
 
 function App() {
-  const [{ status, questions, index }, dispatch] = useReducer(
+  const [{ status, questions, index, answer }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -87,6 +104,10 @@ function App() {
     dispatch({ type: ActionType.START });
   };
 
+  const handleAnswer = (index: number) => {
+    dispatch({ type: ActionType.NEW_ANSWER, payload: index });
+  };
+
   return (
     <div className="app">
       <Header />
@@ -102,7 +123,11 @@ function App() {
             onGameStart={handleGameStart}
           />
         ) : status === Status.ACTIVE ? (
-          <Question question={questions[index]} />
+          <Question
+            question={questions[index]}
+            answer={answer}
+            onAnswer={handleAnswer}
+          />
         ) : null}
       </Main>
     </div>
