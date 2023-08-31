@@ -1,6 +1,9 @@
 import { Reducer, useEffect, useReducer } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
+import Loader from "./components/Loader";
+import ErrorComponent from "./components/Error";
+import StartScreen from "./components/StartScreen";
 
 interface Question {
   question: string;
@@ -52,10 +55,12 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
 };
 
 function App() {
-  const [, dispatch] = useReducer(reducer, initialState);
+  const [{ status, questions }, dispatch] = useReducer(reducer, initialState);
+
+  const questionsCount = questions?.length;
 
   useEffect(() => {
-    dispatch({ type: ActionType.DATA_LOADING });
+    // dispatch({ type: ActionType.DATA_LOADING }); // it's already set to loading
     fetch(`http://localhost:3000/questions`)
       .then((res) => res.json())
       .then((data) => {
@@ -74,8 +79,13 @@ function App() {
     <div className="app">
       <Header />
       <Main>
-        <p>1/15</p>
-        <p>Question?</p>
+        {status === Status.LOADING ? (
+          <Loader />
+        ) : status === Status.ERROR ? (
+          <ErrorComponent />
+        ) : status === Status.READY ? (
+          <StartScreen questionsCount={questionsCount} />
+        ) : null}
       </Main>
     </div>
   );
