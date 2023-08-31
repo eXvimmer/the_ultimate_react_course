@@ -6,6 +6,7 @@ import ErrorComponent from "./components/Error";
 import StartScreen from "./components/StartScreen";
 import Question from "./components/Question";
 import { iQuestion } from "./types";
+import NextButton from "./components/NextButton";
 
 enum Status {
   // loading (fetching) data
@@ -26,6 +27,7 @@ enum ActionType {
   DATA_FAILED,
   START,
   NEW_ANSWER,
+  NEXT_QUESTION,
 }
 
 type Action =
@@ -33,7 +35,8 @@ type Action =
   | { type: ActionType.DATA_RECEIVED; payload: iQuestion[] }
   | { type: ActionType.DATA_FAILED }
   | { type: ActionType.START }
-  | { type: ActionType.NEW_ANSWER; payload: number };
+  | { type: ActionType.NEW_ANSWER; payload: number }
+  | { type: ActionType.NEXT_QUESTION };
 
 interface AppState {
   questions: iQuestion[];
@@ -72,6 +75,9 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
             : s.points,
       };
     }
+    case ActionType.NEXT_QUESTION:
+      // TODO: handle out of range indexes
+      return { ...s, index: s.index + 1, answer: NaN };
     default:
       throw new Error("unknown action type for App");
   }
@@ -108,6 +114,10 @@ function App() {
     dispatch({ type: ActionType.NEW_ANSWER, payload: index });
   };
 
+  const handleNextClick = () => {
+    dispatch({ type: ActionType.NEXT_QUESTION });
+  };
+
   return (
     <div className="app">
       <Header />
@@ -123,11 +133,14 @@ function App() {
             onGameStart={handleGameStart}
           />
         ) : status === Status.ACTIVE ? (
-          <Question
-            question={questions[index]}
-            answer={answer}
-            onAnswer={handleAnswer}
-          />
+          <>
+            <Question
+              question={questions[index]}
+              answer={answer}
+              onAnswer={handleAnswer}
+            />
+            <NextButton onNextClick={handleNextClick} answer={answer} />
+          </>
         ) : null}
       </Main>
     </div>
