@@ -4,6 +4,7 @@ import Main from "./components/Main";
 import Loader from "./components/Loader";
 import ErrorComponent from "./components/Error";
 import StartScreen from "./components/StartScreen";
+import Question from "./components/Question";
 
 interface Question {
   question: string;
@@ -13,10 +14,15 @@ interface Question {
 }
 
 enum Status {
+  // loading (fetching) data
   LOADING = "LOADING",
+  // there was an error while loading (fetching)
   ERROR = "ERROR",
+  // fetched the data successfully
   READY = "READY",
+  // start the game or is playing the game
   ACTIVE = "ACTIVE",
+  // time out or game over
   FINISHED = "FINISHED",
 }
 
@@ -24,12 +30,14 @@ enum ActionType {
   DATA_LOADING,
   DATA_RECEIVED,
   DATA_FAILED,
+  START,
 }
 
 type Action =
   | { type: ActionType.DATA_LOADING }
   | { type: ActionType.DATA_RECEIVED; payload: Question[] }
-  | { type: ActionType.DATA_FAILED };
+  | { type: ActionType.DATA_FAILED }
+  | { type: ActionType.START };
 
 interface AppState {
   questions: Question[];
@@ -49,6 +57,8 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
       return { ...s, questions: a.payload, status: Status.READY };
     case ActionType.DATA_FAILED:
       return { ...s, questions: [], status: Status.ERROR };
+    case ActionType.START:
+      return { ...s, status: Status.ACTIVE };
     default:
       throw new Error("unknown action type for App");
   }
@@ -60,7 +70,6 @@ function App() {
   const questionsCount = questions?.length;
 
   useEffect(() => {
-    // dispatch({ type: ActionType.DATA_LOADING }); // it's already set to loading
     fetch(`http://localhost:3000/questions`)
       .then((res) => res.json())
       .then((data) => {
@@ -75,16 +84,26 @@ function App() {
       });
   }, []);
 
+  const handleGameStart = () => {
+    dispatch({ type: ActionType.START });
+  };
+
   return (
     <div className="app">
       <Header />
       <Main>
+        {/* TODO: handle other statuses  */}
         {status === Status.LOADING ? (
           <Loader />
         ) : status === Status.ERROR ? (
           <ErrorComponent />
         ) : status === Status.READY ? (
-          <StartScreen questionsCount={questionsCount} />
+          <StartScreen
+            questionsCount={questionsCount}
+            onGameStart={handleGameStart}
+          />
+        ) : status === Status.ACTIVE ? (
+          <Question />
         ) : null}
       </Main>
     </div>
