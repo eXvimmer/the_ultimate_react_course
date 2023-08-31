@@ -5,13 +5,7 @@ import Loader from "./components/Loader";
 import ErrorComponent from "./components/Error";
 import StartScreen from "./components/StartScreen";
 import Question from "./components/Question";
-
-interface Question {
-  question: string;
-  options: string[];
-  correctOption: number;
-  points: number;
-}
+import { iQuestion } from "./types";
 
 enum Status {
   // loading (fetching) data
@@ -35,18 +29,20 @@ enum ActionType {
 
 type Action =
   | { type: ActionType.DATA_LOADING }
-  | { type: ActionType.DATA_RECEIVED; payload: Question[] }
+  | { type: ActionType.DATA_RECEIVED; payload: iQuestion[] }
   | { type: ActionType.DATA_FAILED }
   | { type: ActionType.START };
 
 interface AppState {
-  questions: Question[];
+  questions: iQuestion[];
   status: Status;
+  index: number;
 }
 
 const initialState: AppState = {
   questions: [],
   status: Status.LOADING,
+  index: 0,
 };
 
 const reducer: Reducer<AppState, Action> = (s, a) => {
@@ -65,7 +61,10 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
 };
 
 function App() {
-  const [{ status, questions }, dispatch] = useReducer(reducer, initialState);
+  const [{ status, questions, index }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   const questionsCount = questions?.length;
 
@@ -103,7 +102,7 @@ function App() {
             onGameStart={handleGameStart}
           />
         ) : status === Status.ACTIVE ? (
-          <Question />
+          <Question question={questions[index]} />
         ) : null}
       </Main>
     </div>
