@@ -8,6 +8,7 @@ import Question from "./components/Question";
 import { iQuestion } from "./types";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
+import FinishScreen from "./components/FinishScreen";
 
 enum Status {
   // loading (fetching) data
@@ -29,6 +30,7 @@ enum ActionType {
   START,
   NEW_ANSWER,
   NEXT_QUESTION,
+  FINISH,
 }
 
 type Action =
@@ -37,7 +39,8 @@ type Action =
   | { type: ActionType.DATA_FAILED }
   | { type: ActionType.START }
   | { type: ActionType.NEW_ANSWER; payload: number }
-  | { type: ActionType.NEXT_QUESTION };
+  | { type: ActionType.NEXT_QUESTION }
+  | { type: ActionType.FINISH };
 
 interface AppState {
   questions: iQuestion[];
@@ -45,6 +48,7 @@ interface AppState {
   index: number;
   answer: number;
   points: number;
+  highScore: number;
 }
 
 const initialState: AppState = {
@@ -53,6 +57,7 @@ const initialState: AppState = {
   index: 0,
   answer: NaN, // NaN instead of null, means no answer
   points: 0,
+  highScore: parseInt(localStorage.getItem("quiz_high_score") || "0"),
 };
 
 const reducer: Reducer<AppState, Action> = (s, a) => {
@@ -77,18 +82,21 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
       };
     }
     case ActionType.NEXT_QUESTION:
-      // TODO: handle out of range indexes
       return { ...s, index: s.index + 1, answer: NaN };
+    case ActionType.FINISH:
+      return {
+        ...s,
+        status: Status.FINISHED,
+        highScore: s.points > s.highScore ? s.points : s.highScore,
+      };
     default:
       throw new Error("unknown action type for App");
   }
 };
 
 function App() {
-  const [{ status, questions, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ status, questions, index, answer, points, highScore }, dispatch] =
+    useReducer(reducer, initialState);
 
   const questionsCount = questions?.length;
   const maxPossiblePoints = useRef(0);
@@ -99,6 +107,10 @@ function App() {
       0
     );
   }, [questions]);
+
+  useEffect(() => {
+    localStorage.setItem("quiz_high_score", highScore.toString());
+  }, [highScore]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/questions`)
@@ -127,11 +139,14 @@ function App() {
     dispatch({ type: ActionType.NEXT_QUESTION });
   };
 
+  const handleFinishClick = () => {
+    dispatch({ type: ActionType.FINISH });
+  };
+
   return (
     <div className="app">
       <Header />
       <Main>
-        {/* TODO: handle other statuses  */}
         {status === Status.LOADING ? (
           <Loader />
         ) : status === Status.ERROR ? (
@@ -155,8 +170,20 @@ function App() {
               answer={answer}
               onAnswer={handleAnswer}
             />
-            <NextButton onNextClick={handleNextClick} answer={answer} />
+            <NextButton
+              onNextClick={handleNextClick}
+              onFinishClick={handleFinishClick}
+              answer={answer}
+              index={index}
+              questionsCount={questionsCount}
+            />
           </>
+        ) : status === Status.FINISHED ? (
+          <FinishScreen
+            points={points}
+            highScore={highScore}
+            maxPossiblePoints={maxPossiblePoints.current}
+          />
         ) : null}
       </Main>
     </div>
