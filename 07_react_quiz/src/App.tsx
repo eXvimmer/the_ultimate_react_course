@@ -9,6 +9,8 @@ import { iQuestion } from "./types";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
 import FinishScreen from "./components/FinishScreen";
+import Footer from "./components/Footer";
+import Timer from "./components/Timer";
 
 enum Status {
   // loading (fetching) data
@@ -32,6 +34,7 @@ enum ActionType {
   NEXT_QUESTION,
   FINISH,
   RESTART,
+  TICK,
 }
 
 type Action =
@@ -42,7 +45,8 @@ type Action =
   | { type: ActionType.NEW_ANSWER; payload: number }
   | { type: ActionType.NEXT_QUESTION }
   | { type: ActionType.FINISH }
-  | { type: ActionType.RESTART };
+  | { type: ActionType.RESTART }
+  | { type: ActionType.TICK };
 
 interface AppState {
   questions: iQuestion[];
@@ -51,6 +55,7 @@ interface AppState {
   answer: number;
   points: number;
   highScore: number;
+  remainingSeconds: number;
 }
 
 const initialState: AppState = {
@@ -60,7 +65,11 @@ const initialState: AppState = {
   answer: NaN, // NaN instead of null, means no answer
   points: 0,
   highScore: parseInt(localStorage.getItem("quiz_high_score") || "0"),
+  // calculate the time at the start of the game based on the number questions
+  remainingSeconds: NaN,
 };
+
+const secondsPerQuestion = 30;
 
 const reducer: Reducer<AppState, Action> = (s, a) => {
   switch (a.type) {
@@ -71,7 +80,11 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
     case ActionType.DATA_FAILED:
       return { ...s, questions: [], status: Status.ERROR };
     case ActionType.START:
-      return { ...s, status: Status.ACTIVE };
+      return {
+        ...s,
+        status: Status.ACTIVE,
+        remainingSeconds: s.questions.length * secondsPerQuestion,
+      };
     case ActionType.NEW_ANSWER: {
       const question = s.questions[s.index];
       return {
@@ -98,14 +111,22 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
         status: Status.READY,
         highScore: s.highScore,
       };
+    case ActionType.TICK:
+      return {
+        ...s,
+        remainingSeconds: s.remainingSeconds > 0 ? s.remainingSeconds - 1 : 0,
+        status: s.remainingSeconds === 0 ? Status.FINISHED : s.status,
+      };
     default:
       throw new Error("unknown action type for App");
   }
 };
 
 function App() {
-  const [{ status, questions, index, answer, points, highScore }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { status, questions, index, answer, points, highScore, remainingSeconds },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const questionsCount = questions?.length;
   const maxPossiblePoints = useRef(0);
@@ -156,6 +177,10 @@ function App() {
     dispatch({ type: ActionType.RESTART });
   };
 
+  const handleTimerTick = () => {
+    dispatch({ type: ActionType.TICK });
+  };
+
   return (
     <div className="app">
       <Header />
@@ -183,13 +208,19 @@ function App() {
               answer={answer}
               onAnswer={handleAnswer}
             />
-            <NextButton
-              onNextClick={handleNextClick}
-              onFinishClick={handleFinishClick}
-              answer={answer}
-              index={index}
-              questionsCount={questionsCount}
-            />
+            <Footer>
+              <Timer
+                onTimerTick={handleTimerTick}
+                remainingSeconds={remainingSeconds}
+              />
+              <NextButton
+                onNextClick={handleNextClick}
+                onFinishClick={handleFinishClick}
+                answer={answer}
+                index={index}
+                questionsCount={questionsCount}
+              />
+            </Footer>
           </>
         ) : status === Status.FINISHED ? (
           <FinishScreen
