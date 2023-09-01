@@ -1,4 +1,4 @@
-import { Reducer, useEffect, useReducer } from "react";
+import { Reducer, useEffect, useReducer, useRef } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import Loader from "./components/Loader";
@@ -7,6 +7,7 @@ import StartScreen from "./components/StartScreen";
 import Question from "./components/Question";
 import { iQuestion } from "./types";
 import NextButton from "./components/NextButton";
+import Progress from "./components/Progress";
 
 enum Status {
   // loading (fetching) data
@@ -84,12 +85,20 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
 };
 
 function App() {
-  const [{ status, questions, index, answer }, dispatch] = useReducer(
+  const [{ status, questions, index, answer, points }, dispatch] = useReducer(
     reducer,
     initialState
   );
 
   const questionsCount = questions?.length;
+  const maxPossiblePoints = useRef(0);
+
+  useEffect(() => {
+    maxPossiblePoints.current = questions.reduce(
+      (prev, cur) => cur.points + prev,
+      0
+    );
+  }, [questions]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/questions`)
@@ -134,6 +143,13 @@ function App() {
           />
         ) : status === Status.ACTIVE ? (
           <>
+            <Progress
+              index={index}
+              answer={answer}
+              questionsCount={questionsCount}
+              points={points}
+              maxPossiblePoints={maxPossiblePoints.current}
+            />
             <Question
               question={questions[index]}
               answer={answer}
