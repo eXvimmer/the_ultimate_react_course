@@ -31,6 +31,7 @@ enum ActionType {
   NEW_ANSWER,
   NEXT_QUESTION,
   FINISH,
+  RESTART,
 }
 
 type Action =
@@ -40,7 +41,8 @@ type Action =
   | { type: ActionType.START }
   | { type: ActionType.NEW_ANSWER; payload: number }
   | { type: ActionType.NEXT_QUESTION }
-  | { type: ActionType.FINISH };
+  | { type: ActionType.FINISH }
+  | { type: ActionType.RESTART };
 
 interface AppState {
   questions: iQuestion[];
@@ -88,6 +90,13 @@ const reducer: Reducer<AppState, Action> = (s, a) => {
         ...s,
         status: Status.FINISHED,
         highScore: s.points > s.highScore ? s.points : s.highScore,
+      };
+    case ActionType.RESTART:
+      return {
+        ...initialState,
+        questions: s.questions,
+        status: Status.READY,
+        highScore: s.highScore,
       };
     default:
       throw new Error("unknown action type for App");
@@ -143,6 +152,10 @@ function App() {
     dispatch({ type: ActionType.FINISH });
   };
 
+  const handleRestartClick = () => {
+    dispatch({ type: ActionType.RESTART });
+  };
+
   return (
     <div className="app">
       <Header />
@@ -183,6 +196,7 @@ function App() {
             points={points}
             highScore={highScore}
             maxPossiblePoints={maxPossiblePoints.current}
+            onRestartClick={handleRestartClick}
           />
         ) : null}
       </Main>
