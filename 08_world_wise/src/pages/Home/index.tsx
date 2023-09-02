@@ -1,5 +1,9 @@
 function Home() {
-  return <div>World Wise</div>;
+  return (
+    <div>
+      <h1>World Wise</h1>
+    </div>
+  );
 }
 
 export default Home;
