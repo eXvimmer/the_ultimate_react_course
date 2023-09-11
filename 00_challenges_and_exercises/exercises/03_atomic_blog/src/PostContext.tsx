@@ -20,16 +20,16 @@ export function createRandomPost() {
   };
 }
 
-const PostContext = createContext<{
-  posts: iPost[];
-  onAddPost?: (post: iPost) => void;
-  onClearPosts?: () => void;
-  searchQuery: string;
-  setSearchQuery?: Dispatch<React.SetStateAction<string>>;
-}>({
-  posts: [],
-  searchQuery: "",
-});
+const PostContext = createContext<
+  | {
+      posts: iPost[];
+      onAddPost: (post: iPost) => void;
+      onClearPosts: () => void;
+      searchQuery: string;
+      setSearchQuery: Dispatch<React.SetStateAction<string>>;
+    }
+  | undefined
+>(undefined);
 
 export function PostProvider({ children }: { children: ReactNode }) {
   const [posts, setPosts] = useState<iPost[]>(() =>
@@ -69,7 +69,7 @@ export function PostProvider({ children }: { children: ReactNode }) {
 
 export function usePosts() {
   const context = useContext(PostContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("usePosts should be used inside a PostProvider");
   }
   return context;
