@@ -1,4 +1,10 @@
-import React, { createContext, FormEventHandler, useContext } from "react";
+import React, {
+  useContext,
+  useMemo,
+  createContext,
+  Dispatch,
+  FormEventHandler,
+} from "react";
 import { useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 
@@ -19,7 +25,7 @@ const PostContext = createContext<{
   searchQuery: string;
   onAddPost?: (post: Post) => void;
   onClearPosts?: () => void;
-  setSearchQuery?: React.Dispatch<React.SetStateAction<string>>;
+  setSearchQuery?: Dispatch<React.SetStateAction<string>>;
 }>({
   posts: [],
   searchQuery: "",
@@ -58,16 +64,18 @@ function App() {
     [isFakeDark],
   );
 
+  const value = useMemo(() => {
+    return {
+      posts: searchedPosts,
+      onAddPost: handleAddPost,
+      onClearPosts: handleClearPosts,
+      searchQuery,
+      setSearchQuery,
+    };
+  }, [searchedPosts, searchQuery]);
+
   return (
-    <PostContext.Provider
-      value={{
-        posts: searchedPosts,
-        searchQuery,
-        setSearchQuery,
-        onAddPost: handleAddPost,
-        onClearPosts: handleClearPosts,
-      }}
-    >
+    <PostContext.Provider value={value}>
       <section>
         <button
           onClick={() => setIsFakeDark((isFakeDark) => !isFakeDark)}
