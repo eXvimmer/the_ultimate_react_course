@@ -1,29 +1,22 @@
-interface NextButtonProps {
-  answer: number;
-  index: number;
-  questionsCount: number;
-  onNextClick(): void;
-  onFinishClick(): void;
-}
+import { useQuiz } from "../../contexts/QuizContext";
 
-function NextButton({
-  answer,
-  index,
-  questionsCount,
-  onNextClick,
-  onFinishClick,
-}: NextButtonProps) {
+function NextButton() {
+  const { answer, index, questions, handleNextClick, handleFinishClick } =
+    useQuiz();
+
   if (isNaN(answer)) return null;
+
+  const questionsCount = questions.length;
 
   if (index < questionsCount - 1) {
     return (
-      <button className="btn btn-ui" onClick={onNextClick}>
+      <button className="btn btn-ui" onClick={handleNextClick}>
         Next
       </button>
     );
   } else {
     return (
-      <button className="btn btn-ui" onClick={onFinishClick}>
+      <button className="btn btn-ui" onClick={handleFinishClick}>
         Finish
       </button>
     );

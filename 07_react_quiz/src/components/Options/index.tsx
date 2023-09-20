@@ -1,17 +1,9 @@
-import { iQuestion } from "../../types";
+import { useQuiz } from "../../contexts/QuizContext";
 
-interface OptionsProps {
-  question: iQuestion;
-  onAnswer(index: number): void;
-  answer: number;
-}
-
-function Options({
-  question: { options, correctOption },
-  onAnswer,
-  answer,
-}: OptionsProps) {
+function Options() {
+  const { index, answer, questions, handleAnswer } = useQuiz();
   const beenAnswered = !isNaN(answer);
+  const { options, correctOption } = questions[index];
 
   return (
     <div className="options">
@@ -22,7 +14,7 @@ function Options({
           }`}
           disabled={beenAnswered}
           key={opt}
-          onClick={() => onAnswer(index)}
+          onClick={() => handleAnswer?.(index)}
         >
           {opt}
         </button>

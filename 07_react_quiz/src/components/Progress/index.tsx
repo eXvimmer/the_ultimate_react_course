@@ -1,18 +1,9 @@
-interface ProgressProps {
-  index: number;
-  answer: number;
-  points: number;
-  maxPossiblePoints: number;
-  questionsCount: number;
-}
+import { useQuiz } from "../../contexts/QuizContext";
 
-function Progress({
-  index,
-  answer,
-  questionsCount,
-  points,
-  maxPossiblePoints,
-}: ProgressProps) {
+function Progress() {
+  const { index, answer, points, questions, maxPossiblePoints } = useQuiz();
+
+  const questionsCount = questions.length;
   return (
     <header className="progress">
       <progress max={questionsCount} value={index + Number(!isNaN(answer))} />

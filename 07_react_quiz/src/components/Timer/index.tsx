@@ -1,17 +1,14 @@
 import { useEffect } from "react";
+import { useQuiz } from "../../contexts/QuizContext";
 
-interface TimerProps {
-  onTimerTick(): void;
-  remainingSeconds: number;
-}
-
-function Timer({ remainingSeconds, onTimerTick }: TimerProps) {
+function Timer() {
+  const { remainingSeconds, handleTimerTick: onTimerTick } = useQuiz();
   const mins = Math.floor(remainingSeconds / 60);
   const seconds = remainingSeconds % 60;
 
   useEffect(() => {
     const timerId = setInterval(() => {
-      onTimerTick();
+      onTimerTick?.();
     }, 1000);
 
     return () => {

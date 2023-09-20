@@ -1,9 +1,10 @@
-interface StartScreenProps {
-  questionsCount: number;
-  onGameStart(): void;
-}
+import { useQuiz } from "../../contexts/QuizContext";
 
-function StartScreen({ questionsCount, onGameStart }: StartScreenProps) {
+function StartScreen() {
+  const { handleGameStart, questions } = useQuiz();
+
+  const questionsCount = questions.length;
+
   return (
     <div className="start">
       <h2>Welcome to The React Quiz!</h2>
@@ -11,7 +12,7 @@ function StartScreen({ questionsCount, onGameStart }: StartScreenProps) {
         {questionsCount} question{questionsCount === 1 ? "" : "s"} to test your
         React knowledge
       </h3>
-      <button className="btn btn-ui" onClick={onGameStart}>
+      <button className="btn btn-ui" onClick={handleGameStart}>
         Let's Get Started
       </button>
     </div>
