@@ -41,6 +41,10 @@ export default function QuizProvider({ children }: { children: ReactNode }) {
     );
   }, [questions]);
 
+  useEffect(() => {
+    localStorage.setItem("quiz_high_score", highScore.toString());
+  }, [highScore]);
+
   return (
     <QuizContext.Provider
       value={{

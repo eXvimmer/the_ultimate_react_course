@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import Loader from "./components/Loader";
@@ -10,15 +10,11 @@ import Progress from "./components/Progress";
 import FinishScreen from "./components/FinishScreen";
 import Footer from "./components/Footer";
 import Timer from "./components/Timer";
-import { QuizContext } from "./contexts/QuizContext";
+import { useQuiz } from "./contexts/QuizContext";
 import { ActionType, Status } from "./reducers/quizReducer";
 
 function App() {
-  const { highScore, status, dispatch } = useContext(QuizContext);
-
-  useEffect(() => {
-    localStorage.setItem("quiz_high_score", highScore.toString());
-  }, [highScore]);
+  const { status, dispatch } = useQuiz();
 
   useEffect(() => {
     fetch(`http://localhost:3000/questions`)
