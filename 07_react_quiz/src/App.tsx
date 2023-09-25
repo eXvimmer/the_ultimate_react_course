@@ -17,6 +17,7 @@ function App() {
   const { status, dispatch } = useQuiz();
 
   useEffect(() => {
+    // TODO: move the contents of this effect to a function in the context
     fetch(`http://localhost:3000/questions`)
       .then((res) => res.json())
       .then((data) => {
