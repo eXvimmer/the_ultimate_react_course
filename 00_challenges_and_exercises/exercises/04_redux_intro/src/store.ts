@@ -1,41 +1,41 @@
-import { createStore, Reducer } from "redux";
+import { createStore, combineReducers, Reducer } from "redux";
 
-const initialState = {
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
-enum ActionType {
+enum AccountActionType {
   DEPOSIT = "DEPOSIT",
   WITHDRAW = "WITHDRAW",
   REQUEST_LOAN = "REQUEST_LOAN",
   PAY_LOAN = "PAY_LOAN",
 }
 
-type Action =
-  | { type: ActionType.DEPOSIT; payload: number }
-  | { type: ActionType.WITHDRAW; payload: number }
+type AccountAction =
+  | { type: AccountActionType.DEPOSIT; payload: number }
+  | { type: AccountActionType.WITHDRAW; payload: number }
   | {
-      type: ActionType.REQUEST_LOAN;
+      type: AccountActionType.REQUEST_LOAN;
       payload: { loanPurpose: string; amount: number };
     }
-  | { type: ActionType.PAY_LOAN; payload: number };
+  | { type: AccountActionType.PAY_LOAN; payload: number };
 
-const reducer: Reducer<typeof initialState, Action> = (
-  state = initialState,
+const accountReducer: Reducer<typeof initialStateAccount, AccountAction> = (
+  state = initialStateAccount,
   action,
 ) => {
   switch (action.type) {
-    case ActionType.DEPOSIT: {
+    case AccountActionType.DEPOSIT: {
       if (action.payload <= 0) return state;
       return { ...state, balance: state.balance + action.payload };
     }
-    case ActionType.WITHDRAW: {
+    case AccountActionType.WITHDRAW: {
       if (action.payload <= 0) return state;
       return { ...state, balance: state.balance - action.payload };
     }
-    case ActionType.REQUEST_LOAN: {
+    case AccountActionType.REQUEST_LOAN: {
       if (action.payload.amount <= 0) return state;
       if (state.loan > 0) return state;
       return {
@@ -45,7 +45,7 @@ const reducer: Reducer<typeof initialState, Action> = (
         balance: state.balance + action.payload.amount,
       };
     }
-    case ActionType.PAY_LOAN: {
+    case AccountActionType.PAY_LOAN: {
       if (action.payload <= 0) return state;
       if (state.loan <= 0) {
         return {
@@ -75,21 +75,21 @@ const reducer: Reducer<typeof initialState, Action> = (
 /* action creators */
 function deposit(amount: number) {
   return {
-    type: ActionType.DEPOSIT as const,
+    type: AccountActionType.DEPOSIT as const,
     payload: amount,
   };
 }
 
 function withdraw(amount: number) {
   return {
-    type: ActionType.WITHDRAW as const,
+    type: AccountActionType.WITHDRAW as const,
     payload: amount,
   };
 }
 
 function requestLoan(amount: number, loanPurpose: string) {
   return {
-    type: ActionType.REQUEST_LOAN as const,
+    type: AccountActionType.REQUEST_LOAN as const,
     payload: {
       amount,
       loanPurpose,
@@ -99,19 +99,83 @@ function requestLoan(amount: number, loanPurpose: string) {
 
 function payLoan(amount: number) {
   return {
-    type: ActionType.PAY_LOAN as const,
+    type: AccountActionType.PAY_LOAN as const,
     payload: amount,
   };
 }
 
+const initialStateCustomer = {
+  fullName: "",
+  nationalID: "",
+  createdAt: "",
+};
+
+enum CustomerActionType {
+  CREATE_CUSTOMER = "CREATE_CUSTOMER",
+  UPDATE_NAME = "UPDATE_NAME",
+}
+
+type CustomerAction =
+  | {
+      type: CustomerActionType.CREATE_CUSTOMER;
+      payload: typeof initialStateCustomer;
+    }
+  | {
+      type: CustomerActionType.UPDATE_NAME;
+      payload: string;
+    };
+
+function createCustomer(fullName: string, nationalID: string) {
+  return {
+    type: CustomerActionType.CREATE_CUSTOMER as const,
+    payload: {
+      fullName,
+      nationalID,
+      createdAt: new Date().toISOString(),
+    },
+  };
+}
+
+function updateName(fullName: string) {
+  return {
+    type: CustomerActionType.UPDATE_NAME as const,
+    payload: fullName,
+  };
+}
+
+const customerReducer: Reducer<typeof initialStateCustomer, CustomerAction> = (
+  state = initialStateCustomer,
+  action,
+) => {
+  switch (action.type) {
+    case CustomerActionType.CREATE_CUSTOMER: {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
+    case CustomerActionType.UPDATE_NAME:
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 /* store */
-const store = createStore(reducer);
+const store = createStore(
+  combineReducers({ account: accountReducer, customer: customerReducer }),
+);
 
 store.subscribe(() => {
   console.log(store.getState());
 });
 
+store.dispatch(createCustomer("Mustafa", "1"));
 store.dispatch(deposit(5000));
 store.dispatch(withdraw(2000));
 store.dispatch(requestLoan(4900, "I wanna have fun"));
 store.dispatch(payLoan(5000));
+store.dispatch(updateName("Malena"));
