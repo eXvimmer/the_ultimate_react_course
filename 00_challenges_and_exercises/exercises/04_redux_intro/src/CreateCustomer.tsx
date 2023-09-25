@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { iApplicationStore } from "./redux/store";
 
 function Customer() {
   const [fullName, setFullName] = useState("");
   const [nationalId, setNationalId] = useState("");
+
+  useSelector<iApplicationStore>((store) => store.customer);
 
   // function handleClick() {}
 

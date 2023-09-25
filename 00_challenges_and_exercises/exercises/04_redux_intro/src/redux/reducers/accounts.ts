@@ -1,16 +1,15 @@
 import { Reducer } from "redux";
 import { Action, ActionType } from "../actions/accounts";
 
-const initialStateAccount = {
+const initialState = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
-const reducer: Reducer<typeof initialStateAccount, Action> = (
-  state = initialStateAccount,
-  action,
-) => {
+export type State = typeof initialState;
+
+const reducer: Reducer<State, Action> = (state = initialState, action) => {
   switch (action.type) {
     case ActionType.DEPOSIT: {
       if (action.payload <= 0) return state;

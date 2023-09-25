@@ -1,9 +1,6 @@
-import { combineReducers, createStore } from "redux";
-import accountReducer from "../reducers/accounts";
-import customerReducer from "../reducers/customers";
+import { createStore } from "redux";
+import reducers from "../reducers";
 
-const store = createStore(
-  combineReducers({ account: accountReducer, customer: customerReducer }),
-);
+const store = createStore(reducers);
 
 export default store;
