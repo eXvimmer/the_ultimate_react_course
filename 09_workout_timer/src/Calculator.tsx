@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 // import clickSound from "./ClickSound.m4a";
 
 interface CalculatorProps {
@@ -16,8 +16,13 @@ const Calculator = memo(function Calculator({
   const [sets, setSets] = useState(3);
   const [speed, setSpeed] = useState(90);
   const [durationBreak, setDurationBreak] = useState(5);
+  const [duration, setDuration] = useState(0);
 
-  const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
+  useEffect(() => {
+    // NOTE: updating state this way will cause a double render in Calculate
+    setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak);
+  }, [durationBreak, number, sets, speed]);
+
   const mins = Math.floor(duration);
   const seconds = (duration - mins) * 60;
 
@@ -26,6 +31,14 @@ const Calculator = memo(function Calculator({
   //   const sound = new Audio("./assets/ClickSound.m4a");
   //   sound.play();
   // };
+
+  const handleTimeIncrement = () => {
+    setDuration(Math.floor(duration) + 1);
+  };
+
+  const handleTimeDecrement = () => {
+    setDuration(duration > 1 ? Math.ceil(duration) - 1 : 0);
+  };
 
   return (
     <>
@@ -76,13 +89,13 @@ const Calculator = memo(function Calculator({
         </div>
       </form>
       <section>
-        <button>–</button>
+        <button onClick={handleTimeDecrement}>–</button>
         <p>
           {mins < 10 && "0"}
           {mins}:{seconds < 10 && "0"}
           {seconds}
         </p>
-        <button>+</button>
+        <button onClick={handleTimeIncrement}>+</button>
       </section>
     </>
   );
