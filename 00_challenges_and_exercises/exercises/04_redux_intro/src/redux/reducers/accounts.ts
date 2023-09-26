@@ -1,4 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
+
+export type Currency = "USD" | "EUR" | "GBP";
+
+export type DepositActions =
+  | { type: "account/deposit"; payload: number }
+  | { type: "account/convertingCurrency" };
 
 const initialState = {
   balance: 0,
@@ -14,8 +21,8 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     deposit(state, action: PayloadAction<number>) {
-      // TODO: add thunk
       state.balance += action.payload;
+      state.isLoading = false;
     },
 
     withdraw(state, action: PayloadAction<number>) {
@@ -56,9 +63,50 @@ const accountSlice = createSlice({
       state.loan = 0;
       state.loanPurpose = "";
     },
+    convertingCurrency(state) {
+      state.isLoading = true;
+    },
   },
 });
 
-export const { deposit, withdraw, requestLoan, payLoan } = accountSlice.actions;
+export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
+
+// NOTE: the RTK way of doing this is to use to use the automatic action
+// creator, but this is fine too.
+export function deposit(amount: number, currency: Currency) {
+  if (currency === "USD") {
+    return {
+      type: "account/deposit" as const,
+      payload: amount,
+    };
+  }
+
+  const actionCreator: ThunkAction<
+    void,
+    RootState,
+    null,
+    DepositActions
+  > = async (
+    dispatch,
+    /* getState */
+  ) => {
+    try {
+      dispatch({ type: "account/convertingCurrency" as const });
+      const host = "api.frankfurter.app";
+      const res = await fetch(
+        `https://${host}/latest?amount=${amount}&from=${currency}&to=USD`,
+      );
+      const data = await res.json();
+      dispatch({
+        type: "account/deposit" as const,
+        payload: data.rates.USD as number,
+      });
+    } catch (error) {
+      // Handle error if needed
+    }
+  };
+
+  return actionCreator;
+}
 
 export default accountSlice.reducer;
