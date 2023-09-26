@@ -1,26 +1,31 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Action } from "./redux/actions/accounts";
 import {
+  Currency,
   deposit,
   payLoan,
   requestLoan,
   withdraw,
 } from "./redux/actions/accounts";
 import { useRootSelector } from "./hooks/useTypedSelector";
+import { ThunkDispatch } from "redux-thunk";
+import { RootState } from "./redux/reducers";
 
 function AccountOperations() {
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [loanAmount, setLoanAmount] = useState(0);
   const [loanPurpose, setLoanPurpose] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState<Currency>("USD");
   const account = useRootSelector((state) => state.account);
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch<RootState, null, Action> = useDispatch();
 
   function handleDeposit() {
     if (!depositAmount) return;
-    dispatch(deposit(depositAmount));
+    dispatch(deposit(depositAmount, currency));
     setDepositAmount(0);
+    setCurrency("USD");
   }
 
   function handleWithdrawal() {
@@ -53,14 +58,21 @@ function AccountOperations() {
           />
           <select
             value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "USD" || value === "EUR" || value === "GBP") {
+                setCurrency(value);
+              }
+            }}
           >
             <option value="USD">US Dollar</option>
             <option value="EUR">Euro</option>
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={handleDeposit}>Deposit</button>
+          <button onClick={handleDeposit} disabled={account.isLoading}>
+            {account.isLoading ? "Converting..." : "Deposit"}
+          </button>
         </div>
 
         <div>
