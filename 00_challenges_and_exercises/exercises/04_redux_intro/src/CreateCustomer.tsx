@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createCustomer } from "./redux/actions/customers";
+import { createCustomer } from "./redux/customers";
 
 function Customer() {
   const [fullName, setFullName] = useState("");

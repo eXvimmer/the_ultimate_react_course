@@ -33,10 +33,7 @@ const accountSlice = createSlice({
     },
 
     requestLoan: {
-      prepare(
-        amount: number,
-        purpose: string,
-      ): { payload: { amount: number; purpose: string } } {
+      prepare(amount: number, purpose: string) {
         return {
           payload: {
             amount,

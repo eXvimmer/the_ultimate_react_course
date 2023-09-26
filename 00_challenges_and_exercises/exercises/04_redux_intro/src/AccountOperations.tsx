@@ -7,10 +7,10 @@ import {
   payLoan,
   requestLoan,
   withdraw,
-} from "./redux/reducers/accounts";
+} from "./redux/accounts";
 import { ThunkDispatch } from "redux-thunk";
-import { RootState } from "./redux/reducers";
-import { DepositActions } from "./redux/reducers/accounts";
+import { RootState } from "./redux";
+import { DepositActions } from "./redux/accounts";
 
 function AccountOperations() {
   const [depositAmount, setDepositAmount] = useState(0);
