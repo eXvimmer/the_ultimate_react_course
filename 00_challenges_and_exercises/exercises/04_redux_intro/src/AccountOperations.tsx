@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Action } from "./redux/actions/accounts";
+import { useRootSelector } from "./hooks/useTypedSelector";
 import {
-  Currency,
   deposit,
   payLoan,
   requestLoan,
   withdraw,
-} from "./redux/actions/accounts";
-import { useRootSelector } from "./hooks/useTypedSelector";
-import { ThunkDispatch } from "redux-thunk";
-import { RootState } from "./redux/reducers";
+} from "./redux/reducers/accounts";
+
+export type Currency = "USD" | "EUR" | "GBP";
 
 function AccountOperations() {
   const [depositAmount, setDepositAmount] = useState(0);
@@ -19,11 +17,11 @@ function AccountOperations() {
   const [loanPurpose, setLoanPurpose] = useState("");
   const [currency, setCurrency] = useState<Currency>("USD");
   const account = useRootSelector((state) => state.account);
-  const dispatch: ThunkDispatch<RootState, null, Action> = useDispatch();
+  const dispatch = useDispatch();
 
   function handleDeposit() {
     if (!depositAmount) return;
-    dispatch(deposit(depositAmount, currency));
+    dispatch(deposit(depositAmount));
     setDepositAmount(0);
     setCurrency("USD");
   }
