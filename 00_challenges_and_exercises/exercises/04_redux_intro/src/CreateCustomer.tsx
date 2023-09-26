@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { iApplicationStore } from "./redux/store";
+import { useDispatch } from "react-redux";
+import { createCustomer } from "./redux/actions/customers";
 
 function Customer() {
   const [fullName, setFullName] = useState("");
   const [nationalId, setNationalId] = useState("");
+  const dispatch = useDispatch();
 
-  useSelector<iApplicationStore>((store) => store.customer);
-
-  // function handleClick() {}
+  function handleClick() {
+    if (!fullName || !nationalId) return;
+    dispatch(createCustomer(fullName, nationalId));
+    setFullName("");
+    setNationalId("");
+  }
 
   return (
     <div>
@@ -28,7 +32,7 @@ function Customer() {
             onChange={(e) => setNationalId(e.target.value)}
           />
         </div>
-        <button>Create new customer</button>
+        <button onClick={handleClick}>Create new customer</button>
       </div>
     </div>
   );

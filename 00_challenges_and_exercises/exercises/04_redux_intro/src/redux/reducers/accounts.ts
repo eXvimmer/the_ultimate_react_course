@@ -18,6 +18,8 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
     case ActionType.WITHDRAW: {
       if (action.payload <= 0 || action.payload > state.balance) {
         return state;
+        // TODO: show some kind of error when the withdraw amount is more than
+        // balance.
       }
       return { ...state, balance: state.balance - action.payload };
     }
@@ -32,25 +34,11 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
       };
     }
     case ActionType.PAY_LOAN: {
-      if (action.payload <= 0) return state;
-      if (state.loan <= 0) {
-        return {
-          ...state,
-          balance: state.balance + action.payload,
-          loanPurpose: "",
-        };
-      }
-      if (state.loan - action.payload < 0) {
-        return {
-          ...state,
-          loan: 0,
-          balance: state.balance + Math.abs(state.loan - action.payload),
-          loanPurpose: "",
-        };
-      }
       return {
         ...state,
-        loan: state.loan - action.payload,
+        loan: 0,
+        balance: state.balance - state.loan,
+        loanPurpose: "",
       };
     }
     default:

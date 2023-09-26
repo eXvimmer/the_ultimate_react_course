@@ -12,7 +12,7 @@ export type Action =
       type: ActionType.REQUEST_LOAN;
       payload: { loanPurpose: string; amount: number };
     }
-  | { type: ActionType.PAY_LOAN; payload: number };
+  | { type: ActionType.PAY_LOAN };
 
 /* action creators */
 export function deposit(amount: number) {
@@ -39,9 +39,9 @@ export function requestLoan(amount: number, loanPurpose: string) {
   };
 }
 
-export function payLoan(amount: number) {
+// TODO: get the amount as argument
+export function payLoan() {
   return {
     type: ActionType.PAY_LOAN as const,
-    payload: amount,
   };
 }
