@@ -61,7 +61,7 @@ function Order() {
 
         <div>
           {priority && <span>Priority</span>}
-          <span>{status} order</span>
+          <span>{/* TODO: add status */} order</span>
         </div>
       </div>
 
