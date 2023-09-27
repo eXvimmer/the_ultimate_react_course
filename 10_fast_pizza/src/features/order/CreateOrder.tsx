@@ -1,6 +1,14 @@
-import { Form, ActionFunctionArgs, redirect } from "react-router-dom";
+import {
+  Form,
+  ActionFunctionArgs,
+  redirect,
+  useNavigation,
+  ActionFunction,
+  useActionData,
+} from "react-router-dom";
 import { iCartItem } from "../../types";
 import { createOrder } from "../../services/apiRestaurant";
+import { isValidPhone } from "../../utils/helpers";
 
 const fakeCart: iCartItem[] = [
   {
@@ -28,7 +36,10 @@ const fakeCart: iCartItem[] = [
 
 function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
+  const navigation = useNavigation();
+  const formErrors = useActionData() as Record<string, string>;
   const cart = fakeCart;
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div>
@@ -46,6 +57,7 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
+          {formErrors?.phone && <p>{formErrors?.phone}</p>}
         </div>
 
         <div>
@@ -68,7 +80,9 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Placing Order..." : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -76,7 +90,9 @@ function CreateOrder() {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const createOrderAction = async ({ request }: ActionFunctionArgs) => {
+export const createOrderAction: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData) as {
     customer: string;
@@ -90,6 +106,12 @@ export const createOrderAction = async ({ request }: ActionFunctionArgs) => {
     cart: JSON.parse(data.cart),
     priority: data.priority === "on",
   };
+  if (!isValidPhone(order.phone)) {
+    return {
+      phone:
+        "Please provide a correct phone number, in case we need to contact you.",
+    };
+  }
   const res = await createOrder(order);
   return redirect(`/order/${res.id}`);
 };
