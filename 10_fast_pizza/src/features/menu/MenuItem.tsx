@@ -1,7 +1,7 @@
-import { iPizza } from "../../types";
+import { iMenuItem } from "../../types";
 import { formatCurrency } from "../../utils/helpers";
 
-function MenuItem({ pizza }: { pizza: iPizza }) {
+function MenuItem({ pizza }: { pizza: iMenuItem }) {
   const { name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
 
   return (

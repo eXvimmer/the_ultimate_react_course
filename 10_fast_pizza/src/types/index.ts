@@ -6,10 +6,13 @@ export interface iCartItem {
   totalPrice: number;
 }
 
-export interface iPizza {
+export interface iMenuItem {
+  id: number;
   name: string;
   unitPrice: number;
+  imageUrl: string;
   ingredients: string[];
   soldOut: boolean;
-  imageUrl: string;
 }
+
+export type iMenu = iMenuItem[];
