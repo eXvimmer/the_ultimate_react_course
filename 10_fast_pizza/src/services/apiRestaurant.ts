@@ -1,4 +1,4 @@
-import { iMenu } from "../types";
+import { iMenu, iOrder } from "../types";
 
 const API_URL = "https://react-fast-pizza-api.onrender.com/api";
 
@@ -16,8 +16,7 @@ export async function getMenu(): Promise<iMenu> {
   return data;
 }
 
-// TODO: add id type
-export async function getOrder(id) {
+export async function getOrder(id: string): Promise<iOrder> {
   const res = await fetch(`${API_URL}/order/${id}`);
   if (!res.ok) throw Error(`Couldn't find order #${id}`);
 

@@ -6,11 +6,11 @@ import {
 
 function Error() {
   const navigate = useNavigate();
-  const err = useRouteError();
+  const err = useRouteError() as unknown;
 
   const errMessage = isRouteErrorResponse(err)
     ? err.data
-    : err instanceof Error && "message" in err
+    : err instanceof Object && "message" in err
     ? err.message
     : "Oops! click the button below to go back";
 

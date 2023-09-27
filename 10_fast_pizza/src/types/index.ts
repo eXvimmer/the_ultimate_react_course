@@ -16,3 +16,17 @@ export interface iMenuItem {
 }
 
 export type iMenu = iMenuItem[];
+
+export interface iOrder {
+  id: string;
+  customer: string;
+  phone: string;
+  address: string;
+  priority: boolean;
+  estimatedDelivery: string;
+  cart: iCartItem[];
+  position: string;
+  orderPrice: number;
+  priorityPrice: number;
+  status: string;
+}
