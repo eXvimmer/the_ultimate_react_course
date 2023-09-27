@@ -1,15 +1,16 @@
 // Test ID: IIDSAT
 
-import { useLoaderData } from "react-router-dom";
+import { LoaderFunction, useLoaderData } from "react-router-dom";
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
-import { iOrder } from "../../types";
+import { iOrderResponse } from "../../types";
+import { getOrder } from "../../services/apiRestaurant";
 
 function Order() {
-  const order = useLoaderData() as iOrder;
+  const order = useLoaderData() as iOrderResponse;
   const {
     // id,
     status,
@@ -48,5 +49,13 @@ function Order() {
     </div>
   );
 }
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const orderLoader: LoaderFunction<iOrderResponse> = async ({
+  params,
+}) => {
+  if (!params.orderId) return;
+  return await getOrder(params.orderId);
+};
 
 export default Order;

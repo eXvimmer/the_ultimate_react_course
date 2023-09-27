@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { iMenu } from "../../types";
 import MenuItem from "./MenuItem";
+import { getMenu } from "../../services/apiRestaurant";
 
 function Menu() {
   const menu = useLoaderData() as iMenu;
@@ -11,6 +12,11 @@ function Menu() {
       ))}
     </ul>
   );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export async function menuLoader() {
+  return await getMenu();
 }
 
 export default Menu;

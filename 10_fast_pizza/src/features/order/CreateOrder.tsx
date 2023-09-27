@@ -1,38 +1,41 @@
-// import { iCartItem } from "../../types";
+import { Form, ActionFunctionArgs, redirect } from "react-router-dom";
+import { iCartItem } from "../../types";
+import { createOrder } from "../../services/apiRestaurant";
 
-// const fakeCart: iCartItem[] = [
-//   {
-//     pizzaId: 12,
-//     name: "Mediterranean",
-//     quantity: 2,
-//     unitPrice: 16,
-//     totalPrice: 32,
-//   },
-//   {
-//     pizzaId: 6,
-//     name: "Vegetale",
-//     quantity: 1,
-//     unitPrice: 13,
-//     totalPrice: 13,
-//   },
-//   {
-//     pizzaId: 11,
-//     name: "Spinach and Mushroom",
-//     quantity: 1,
-//     unitPrice: 15,
-//     totalPrice: 15,
-//   },
-// ];
+const fakeCart: iCartItem[] = [
+  {
+    pizzaId: 12,
+    name: "Mediterranean",
+    quantity: 2,
+    unitPrice: 16,
+    totalPrice: 32,
+  },
+  {
+    pizzaId: 6,
+    name: "Vegetale",
+    quantity: 1,
+    unitPrice: 13,
+    totalPrice: 13,
+  },
+  {
+    pizzaId: 11,
+    name: "Spinach and Mushroom",
+    quantity: 1,
+    unitPrice: 15,
+    totalPrice: 15,
+  },
+];
 
 function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
-  // const cart = fakeCart;
+  const cart = fakeCart;
 
   return (
     <div>
       <h2>Ready to order? Let's go!</h2>
 
-      <form>
+      {/* <Form method="POST" action="/order/new"> */}
+      <Form method="POST">
         <div>
           <label>First Name</label>
           <input type="text" name="customer" required />
@@ -64,11 +67,31 @@ function CreateOrder() {
         </div>
 
         <div>
+          <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <button>Order now</button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const createOrderAction = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData) as {
+    customer: string;
+    phone: string;
+    address: string;
+    priority: string;
+    cart: string;
+  };
+  const order = {
+    ...data,
+    cart: JSON.parse(data.cart),
+    priority: data.priority === "on",
+  };
+  const res = await createOrder(order);
+  return redirect(`/order/${res.id}`);
+};
 
 export default CreateOrder;

@@ -17,7 +17,15 @@ export interface iMenuItem {
 
 export type iMenu = iMenuItem[];
 
-export interface iOrder {
+export interface iCreateOrderRequest {
+  customer: string;
+  phone: string;
+  priority: boolean;
+  address: string;
+  cart: iCartItem;
+}
+
+export interface iOrderResponse {
   id: string;
   customer: string;
   phone: string;
@@ -29,4 +37,5 @@ export interface iOrder {
   orderPrice: number;
   priorityPrice: number;
   status: string;
+  createdAt?: string;
 }

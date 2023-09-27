@@ -1,4 +1,4 @@
-import { iMenu, iOrder } from "../types";
+import { iMenu, iCreateOrderRequest, iOrderResponse } from "../types";
 
 const API_URL = "https://react-fast-pizza-api.onrender.com/api";
 
@@ -16,7 +16,7 @@ export async function getMenu(): Promise<iMenu> {
   return data;
 }
 
-export async function getOrder(id: string): Promise<iOrder> {
+export async function getOrder(id: string): Promise<iOrderResponse> {
   const res = await fetch(`${API_URL}/order/${id}`);
   if (!res.ok) throw Error(`Couldn't find order #${id}`);
 
@@ -24,8 +24,9 @@ export async function getOrder(id: string): Promise<iOrder> {
   return data;
 }
 
-//  TODO: add newOrder type
-export async function createOrder(newOrder) {
+export async function createOrder(
+  newOrder: iCreateOrderRequest,
+): Promise<iOrderResponse> {
   try {
     const res = await fetch(`${API_URL}/order`, {
       method: "POST",
@@ -35,7 +36,9 @@ export async function createOrder(newOrder) {
       },
     });
 
-    if (!res.ok) throw Error();
+    if (!res.ok) {
+      throw Error("failed to create an order");
+    }
     const { data } = await res.json();
     return data;
   } catch {
@@ -43,7 +46,8 @@ export async function createOrder(newOrder) {
   }
 }
 
-export async function updateOrder(id, updateObj) {
+// TODO: FIX updateObj type
+export async function updateOrder(id: string, updateObj: unknown) {
   try {
     const res = await fetch(`${API_URL}/order/${id}`, {
       method: "PATCH",
