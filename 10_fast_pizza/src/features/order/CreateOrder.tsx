@@ -10,6 +10,7 @@ import { iCartItem } from "../../types";
 import { createOrder } from "../../services/apiRestaurant";
 import { isValidPhone } from "../../utils/helpers";
 import Button from "../../ui/Button";
+import { useRootSelector } from "../../hooks/useRootSelector";
 
 const fakeCart: iCartItem[] = [
   {
@@ -41,6 +42,7 @@ function CreateOrder() {
   const formErrors = useActionData() as Record<string, string>;
   const cart = fakeCart;
   const isSubmitting = navigation.state === "submitting";
+  const username = useRootSelector((s) => s.user.username);
 
   return (
     <div className="px-4 py-6">
@@ -54,7 +56,7 @@ function CreateOrder() {
             type="text"
             name="customer"
             required
-            autoFocus
+            defaultValue={username}
           />
         </div>
 

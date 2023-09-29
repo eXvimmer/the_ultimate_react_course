@@ -14,7 +14,7 @@ function CreateUser() {
     if (username) {
       dispatch(updateName(username));
       setUsername("");
-      navigate("/order/new");
+      navigate("/menu");
     }
   };
 
@@ -30,7 +30,6 @@ function CreateUser() {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         className="input mb-8 w-72"
-        autoFocus
       />
 
       {username !== "" && (
