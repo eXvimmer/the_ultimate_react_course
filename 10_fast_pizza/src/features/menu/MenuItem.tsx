@@ -6,6 +6,7 @@ import { addItem, getQuantityById } from "../cart/cartSlice";
 import { MouseEventHandler } from "react";
 import { useRootSelector } from "../../hooks/useRootSelector";
 import DeleteItem from "../cart/DeleteItem";
+import UpdateItemQuantity from "../cart/UpdateItemQuantity";
 
 function MenuItem({ pizza }: { pizza: iMenuItem }) {
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
@@ -47,7 +48,12 @@ function MenuItem({ pizza }: { pizza: iMenuItem }) {
             </p>
           )}
 
-          {isInCart && <DeleteItem id={id} />}
+          {isInCart && (
+            <div className="flex items-center gap-3 sm:gap-8">
+              <UpdateItemQuantity id={id} currentQuantity={currentQuantity} />
+              <DeleteItem id={id} />
+            </div>
+          )}
 
           {!soldOut && !isInCart && (
             <Button type="small" onClick={handleAddToCart}>
