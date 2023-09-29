@@ -2,12 +2,17 @@ import { useDispatch } from "react-redux";
 import { iMenuItem } from "../../types";
 import Button from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
-import { addItem } from "../cart/cartSlice";
+import { addItem, getQuantityById } from "../cart/cartSlice";
 import { MouseEventHandler } from "react";
+import { useRootSelector } from "../../hooks/useRootSelector";
+import DeleteItem from "../cart/DeleteItem";
 
 function MenuItem({ pizza }: { pizza: iMenuItem }) {
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
   const dispatch = useDispatch();
+
+  const currentQuantity = useRootSelector(getQuantityById(id));
+  const isInCart = currentQuantity > 0;
 
   const handleAddToCart: MouseEventHandler<HTMLButtonElement> = () => {
     dispatch(
@@ -42,7 +47,9 @@ function MenuItem({ pizza }: { pizza: iMenuItem }) {
             </p>
           )}
 
-          {!soldOut && (
+          {isInCart && <DeleteItem id={id} />}
+
+          {!soldOut && !isInCart && (
             <Button type="small" onClick={handleAddToCart}>
               Add to cart
             </Button>

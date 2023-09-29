@@ -21,9 +21,19 @@ const cartSlice = createSlice({
       }
     },
     deleteItem(state, action: PayloadAction<iCartItem["pizzaId"]>) {
-      // TODO: remove the item if the quantity is 0 or less, otherwise reduce
-      // the quantity
-      state.cart = state.cart.filter((item) => item.pizzaId !== action.payload);
+      const index = state.cart.findIndex(
+        (item) => item.pizzaId === action.payload,
+      );
+      if (index !== -1) {
+        // found
+        const item = state.cart[index];
+        --item.quantity;
+        if (item.quantity <= 0) {
+          state.cart.splice(index, 1);
+        } else {
+          item.totalPrice = item.quantity * item.unitPrice;
+        }
+      }
     },
     increaseItemQuantity(state, action: PayloadAction<iCartItem["pizzaId"]>) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
@@ -61,5 +71,8 @@ export const getTotalCartQuantity = (state: RootState) =>
 
 export const getTotalCartPrice = (state: RootState) =>
   state.cart.cart.reduce((prev, cur) => prev + cur.totalPrice, 0);
+
+export const getQuantityById = (id: number) => (state: RootState) =>
+  state.cart.cart.find((item) => item.pizzaId === id)?.quantity || 0;
 
 export default cartSlice.reducer;

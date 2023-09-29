@@ -1,10 +1,12 @@
 import { iCartItem } from "../../types";
-import Button from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
+import DeleteItem from "./DeleteItem";
 
-function CartItem({ item }: { item: iCartItem }) {
-  const { name, quantity, totalPrice } = item;
-
+function CartItem({
+  item: { pizzaId, name, quantity, totalPrice },
+}: {
+  item: iCartItem;
+}) {
   return (
     <li className="py-3 sm:flex sm:items-center sm:justify-between">
       <p className="mb-1 sm:mb-0">
@@ -12,7 +14,7 @@ function CartItem({ item }: { item: iCartItem }) {
       </p>
       <div className="flex items-center justify-between sm:gap-6">
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
-        <Button type="small">Delete</Button>
+        <DeleteItem id={pizzaId} />
       </div>
     </li>
   );
