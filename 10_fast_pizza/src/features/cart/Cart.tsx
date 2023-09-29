@@ -1,42 +1,29 @@
 import LinkButton from "../../ui/LinkButton";
 import Button from "../../ui/Button";
-import { iCartItem } from "../../types";
 import CartItem from "./CartItem";
 import { useRootSelector } from "../../hooks/useRootSelector";
-
-const fakeCart: iCartItem[] = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+import { clearCart, getCart } from "./cartSlice";
+import { useDispatch } from "react-redux";
+import EmptyCart from "./EmptyCart";
 
 function Cart() {
+  const dispatch = useDispatch();
   const username = useRootSelector((s) => s.user.username);
-  const cart = fakeCart;
+  const cart = useRootSelector(getCart);
+
+  if (!cart.length) return <EmptyCart />;
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
 
   return (
     <div className="px-4 py-3">
       <LinkButton to="/menu">&larr; Back to menu</LinkButton>
 
-      <h2 className="mt-7 text-xl font-semibold">Your cart, {username}</h2>
+      <h2 className="mt-7 text-xl font-semibold">
+        Your cart {username ? `, ${username}` : ""}
+      </h2>
 
       <ul className="mt-3 divide-y divide-stone-200 border-b">
         {cart.map((item) => (
@@ -49,7 +36,9 @@ function Cart() {
           Order pizzas
         </Button>
 
-        <Button type="secondary">Clear cart</Button>
+        <Button type="secondary" onClick={handleClearCart}>
+          Clear cart
+        </Button>
       </div>
     </div>
   );

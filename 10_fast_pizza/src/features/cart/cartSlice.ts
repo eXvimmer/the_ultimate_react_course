@@ -21,6 +21,8 @@ const cartSlice = createSlice({
       }
     },
     deleteItem(state, action: PayloadAction<iCartItem["pizzaId"]>) {
+      // TODO: remove the item if the quantity is 0 or less, otherwise reduce
+      // the quantity
       state.cart = state.cart.filter((item) => item.pizzaId !== action.payload);
     },
     increaseItemQuantity(state, action: PayloadAction<iCartItem["pizzaId"]>) {
@@ -52,6 +54,8 @@ export const {
 } = cartSlice.actions;
 
 // TODO: checkout reselect library instead of this
+export const getCart = (state: RootState) => state.cart.cart;
+
 export const getTotalCartQuantity = (state: RootState) =>
   state.cart.cart.reduce((prev, cur) => prev + cur.quantity, 0);
 
