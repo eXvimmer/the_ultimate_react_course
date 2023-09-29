@@ -1,3 +1,7 @@
+import reducers from "../reducer";
+
+export type RootState = ReturnType<typeof reducers>;
+
 export interface iCartItem {
   pizzaId: number;
   name: string;

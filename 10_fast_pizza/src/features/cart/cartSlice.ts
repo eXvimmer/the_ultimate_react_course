@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { iCartItem } from "../../types";
+import { iCartItem, RootState } from "../../types";
 
 const initialState: { cart: iCartItem[] } = {
   cart: [],
@@ -50,5 +50,12 @@ export const {
   decreaseItemQuantity,
   clearCart,
 } = cartSlice.actions;
+
+// TODO: checkout reselect library instead of this
+export const getTotalCartQuantity = (state: RootState) =>
+  state.cart.cart.reduce((prev, cur) => prev + cur.quantity, 0);
+
+export const getTotalCartPrice = (state: RootState) =>
+  state.cart.cart.reduce((prev, cur) => prev + cur.totalPrice, 0);
 
 export default cartSlice.reducer;
