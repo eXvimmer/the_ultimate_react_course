@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 const base =
@@ -16,11 +16,13 @@ function Button({
   disabled,
   type,
   to,
+  onClick,
 }: {
   children: ReactNode;
   disabled?: boolean;
   type: "primary" | "secondary" | "small";
   to?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
   if (to)
     return (
@@ -28,6 +30,14 @@ function Button({
         {children}
       </Link>
     );
+
+  if (onClick) {
+    return (
+      <button disabled={disabled} onClick={onClick} className={styles[type]}>
+        {children}
+      </button>
+    );
+  }
 
   return (
     <button disabled={disabled} className={styles[type]}>

@@ -1,9 +1,25 @@
+import { useDispatch } from "react-redux";
 import { iMenuItem } from "../../types";
 import Button from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
+import { addItem } from "../cart/cartSlice";
+import { MouseEventHandler } from "react";
 
 function MenuItem({ pizza }: { pizza: iMenuItem }) {
-  const { name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  const dispatch = useDispatch();
+
+  const handleAddToCart: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch(
+      addItem({
+        pizzaId: id,
+        name,
+        quantity: 1,
+        unitPrice,
+        totalPrice: unitPrice,
+      }),
+    );
+  };
 
   return (
     <li className="flex gap-4 py-2">
@@ -26,7 +42,11 @@ function MenuItem({ pizza }: { pizza: iMenuItem }) {
             </p>
           )}
 
-          <Button type="small">Add to cart</Button>
+          {!soldOut && (
+            <Button type="small" onClick={handleAddToCart}>
+              Add to cart
+            </Button>
+          )}
         </div>
       </div>
     </li>
