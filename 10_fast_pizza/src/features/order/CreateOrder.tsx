@@ -6,43 +6,27 @@ import {
   ActionFunction,
   useActionData,
 } from "react-router-dom";
-import { iCartItem } from "../../types";
 import { createOrder } from "../../services/apiRestaurant";
-import { isValidPhone } from "../../utils/helpers";
+import { formatCurrency, isValidPhone } from "../../utils/helpers";
 import Button from "../../ui/Button";
 import { useRootSelector } from "../../hooks/useRootSelector";
-
-const fakeCart: iCartItem[] = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
+import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
+import { useState } from "react";
 
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
+  const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
-  const formErrors = useActionData() as Record<string, string>;
-  const cart = fakeCart;
-  const isSubmitting = navigation.state === "submitting";
   const username = useRootSelector((s) => s.user.username);
+  const cart = useRootSelector(getCart);
+  const formErrors = useActionData() as Record<string, string>;
+  const totalCartPrice = useRootSelector(getTotalCartPrice);
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
+  const totalPrice = totalCartPrice + priorityPrice;
+  const isSubmitting = navigation.state === "submitting";
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-4 py-6">
@@ -90,8 +74,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority ? "on" : "off"}
+            onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor="priority" className="font-medium">
             Want to yo give your order priority?
@@ -101,7 +85,9 @@ function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button disabled={isSubmitting} type="primary">
-            {isSubmitting ? "Placing order...." : "Order now"}
+            {isSubmitting
+              ? "Placing order...."
+              : `Order now from ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -133,6 +119,7 @@ export const createOrderAction: ActionFunction = async ({
     };
   }
   const res = await createOrder(order);
+  store.dispatch(clearCart()); // WARN: HACK: DON'T overuse this technique.
   return redirect(`/order/${res.id}`);
 };
 
