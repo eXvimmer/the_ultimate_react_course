@@ -25,12 +25,13 @@ function Button({
   to?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
-  if (to)
+  if (to) {
     return (
       <Link to={to} className={styles[type]}>
         {children}
       </Link>
     );
+  }
 
   if (onClick) {
     return (

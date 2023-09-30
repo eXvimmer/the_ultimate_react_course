@@ -11,7 +11,9 @@ function Cart() {
   const username = useRootSelector((s) => s.user.username);
   const cart = useRootSelector(getCart);
 
-  if (!cart.length) return <EmptyCart />;
+  if (!cart.length) {
+    return <EmptyCart />;
+  }
 
   const handleClearCart = () => {
     dispatch(clearCart());

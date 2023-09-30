@@ -14,10 +14,16 @@ import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
 import EmptyCart from "../cart/EmptyCart";
 import store from "../../store";
 import { useState } from "react";
+import { fetchAddress } from "../user/userSlice";
+import { useDispatch } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { RootState } from "../../types";
 
 function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
+  const thunkDispatch: ThunkDispatch<RootState, null, AnyAction> =
+    useDispatch();
   const username = useRootSelector((s) => s.user.username);
   const cart = useRootSelector(getCart);
   const formErrors = useActionData() as Record<string, string>;
@@ -26,11 +32,18 @@ function CreateOrder() {
   const totalPrice = totalCartPrice + priorityPrice;
   const isSubmitting = navigation.state === "submitting";
 
-  if (!cart.length) return <EmptyCart />;
+  if (!cart.length) {
+    return <EmptyCart />;
+  }
 
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
+
+      {/* TODO: change this */}
+      <button onClick={() => thunkDispatch(fetchAddress())}>
+        Get Position
+      </button>
 
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
