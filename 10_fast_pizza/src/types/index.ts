@@ -2,6 +2,11 @@ import reducers from "../reducer";
 
 export type RootState = ReturnType<typeof reducers>;
 
+export interface iPosition {
+  latitude: number;
+  longitude: number;
+}
+
 export interface iCartItem {
   pizzaId: number;
   name: string;

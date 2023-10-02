@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getAddress } from "../../services/apiGeocoding";
+import { iPosition } from "../../types";
 
 // coords: {
 // accuracy : 1
@@ -13,7 +14,7 @@ import { getAddress } from "../../services/apiGeocoding";
 // timestamp : 1695796155286
 function getPosition() {
   return new Promise<{
-    coords: { latitude: number; longitude: number };
+    coords: iPosition;
     timestamp: number;
   }>((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -44,7 +45,7 @@ export const fetchAddress = createAsyncThunk(
 interface State {
   username: string;
   status: "idle" | "loading" | "error";
-  position?: { latitude: number; longitude: number };
+  position?: iPosition;
   address?: string;
   error?: string;
 }

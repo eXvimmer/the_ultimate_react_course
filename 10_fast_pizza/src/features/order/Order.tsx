@@ -10,6 +10,7 @@ import { iMenu, iOrderResponse } from "../../types";
 import { getOrder } from "../../services/apiRestaurant";
 import OrderItem from "./OrderItem";
 import { useEffect } from "react";
+import UpdateOrder from "./UpdateOrder";
 
 function Order() {
   const order = useLoaderData() as iOrderResponse;
@@ -87,6 +88,8 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+
+      {!priority && <UpdateOrder />}
     </div>
   );
 }

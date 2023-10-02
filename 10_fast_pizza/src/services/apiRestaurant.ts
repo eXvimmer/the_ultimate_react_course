@@ -46,8 +46,10 @@ export async function createOrder(
   }
 }
 
-// TODO: FIX updateObj type
-export async function updateOrder(id: string, updateObj: unknown) {
+export async function updateOrder(
+  id: string,
+  updateObj: Partial<iOrderResponse>,
+) {
   try {
     const res = await fetch(`${API_URL}/order/${id}`, {
       method: "PATCH",
