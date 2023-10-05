@@ -3,6 +3,7 @@ import { iCabin } from "../../types";
 import { formatCurrency } from "../../utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
+import toast from "react-hot-toast";
 
 const TableRow = styled.div`
   display: grid;
@@ -56,12 +57,10 @@ function CabinRow({
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
       });
-      // TODO: replace alert with a custom component
-      alert("cabin successfully deleted");
+      toast.success("cabin successfully deleted");
     },
     onError: (err) => {
-      // TODO: replace alert with a custom component
-      alert(err instanceof Error ? err.message : "something went wrong");
+      toast.error(err instanceof Error ? err.message : "something went wrong");
     },
   });
 
@@ -69,7 +68,9 @@ function CabinRow({
     <TableRow role="row">
       <Img src={image || undefined} />
       <Cabin>{name}</Cabin>
-      <div>Fits up to {max_capacity} guests</div>
+      <div>
+        {max_capacity} guest{max_capacity === 1 ? "" : "s"}
+      </div>
       <Price>{formatCurrency(regular_price || 0)}</Price>
       <Discount>{formatCurrency(discount || 0)}</Discount>
       <button onClick={() => mutate(id)} disabled={isDeleting}>
