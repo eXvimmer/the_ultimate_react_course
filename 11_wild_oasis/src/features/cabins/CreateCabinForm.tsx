@@ -1,54 +1,23 @@
-import styled from "styled-components";
-
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-import { useForm } from "react-hook-form";
+import { useForm /* , FieldErrors */ } from "react-hook-form";
 import { iCabin } from "../../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
-
-const FormRow = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
-  gap: 2.4rem;
-
-  padding: 1.2rem 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-
-  &:has(button) {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1.2rem;
-  }
-`;
-
-const Label = styled.label`
-  font-weight: 500;
-`;
-
-// const Error = styled.span`
-//   font-size: 1.4rem;
-//   color: var(--color-red-700);
-// `;
+import FormRow from "../../ui/FormRow";
 
 function CreateCabinForm() {
-  const { register, handleSubmit, reset } = useForm<iCabin>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<iCabin>();
   const queryClient = useQueryClient();
 
   const { isLoading: isCreating, mutate } = useMutation({
@@ -63,54 +32,107 @@ function CreateCabinForm() {
     },
   });
 
-  function onSubmit(data: iCabin) {
-    // TODO: validate before submitting
+  function onValid(data: iCabin) {
     mutate(data);
   }
 
+  // function onInvalid(errors: FieldErrors<iCabin>) {
+  //   console.log(errors);
+  // }
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormRow>
-        <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" {...register("name")} />
+    <Form onSubmit={handleSubmit(onValid /*, onInvalid */)}>
+      <FormRow label="Cabin Name" htmlFor="name" error={errors?.name?.message}>
+        <Input
+          type="text"
+          id="name"
+          disabled={isCreating}
+          {...register("name", { required: "this field is required" })}
+        />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="max_capacity">Maximum capacity</Label>
-        <Input type="number" id="max_capacity" {...register("max_capacity")} />
+      <FormRow
+        label="Maximum Capacity"
+        htmlFor="max_capacity"
+        error={errors?.max_capacity?.message}
+      >
+        <Input
+          type="number"
+          id="max_capacity"
+          disabled={isCreating}
+          {...register("max_capacity", {
+            required: "this field is required",
+            min: {
+              value: 1,
+              message: "max capacity should be at least 1",
+            },
+          })}
+        />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="regular_price">Regular price</Label>
+      <FormRow
+        label="Regular Price"
+        htmlFor="regular_price"
+        error={errors?.regular_price?.message}
+      >
         <Input
           type="number"
           id="regular_price"
-          {...register("regular_price")}
+          disabled={isCreating}
+          {...register("regular_price", {
+            required: "this field is required",
+            min: {
+              value: 1,
+              message: "regular price should be at least 1",
+            },
+          })}
         />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="discount">Discount</Label>
+      <FormRow
+        label="Discount"
+        htmlFor="discount"
+        error={errors?.discount?.message}
+      >
         <Input
           type="number"
           id="discount"
+          disabled={isCreating}
           defaultValue={0}
-          {...register("discount")}
+          {...register("discount", {
+            validate: (value) => {
+              if (!value && value !== 0) {
+                return "discount should be set";
+              }
+              if (value < 0) {
+                return "discount cannot be less than zero";
+              }
+              if (value > (getValues()?.regular_price ?? 0)) {
+                return "discount should be less or equal to the regular price";
+              }
+            },
+          })}
         />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="description">Description for website</Label>
+      <FormRow
+        label="Description"
+        htmlFor="description"
+        error={errors?.description?.message}
+      >
         <Textarea
           type="number"
           id="description"
           defaultValue=""
-          {...register("description")}
+          {...register("description", { required: "this field is required" })}
         />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="image">Cabin photo</Label>
+      <FormRow
+        label="Cabin Photo"
+        htmlFor="image"
+        error={errors?.image?.message}
+      >
         <FileInput id="image" accept="image/*" {...register("image")} />
       </FormRow>
 
