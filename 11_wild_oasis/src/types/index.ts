@@ -63,12 +63,6 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: "bookings_cabin_id_fkey";
-            columns: ["cabin_id"];
-            referencedRelation: "cabins";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "bookings_guest_id_fkey";
             columns: ["guest_id"];
             referencedRelation: "guests";
@@ -81,7 +75,7 @@ export interface Database {
           created_at: string;
           description: string | null;
           discount: number | null;
-          id: number;
+          id: string;
           image: string | null;
           max_capacity: number | null;
           name: string | null;
@@ -91,7 +85,7 @@ export interface Database {
           created_at?: string;
           description?: string | null;
           discount?: number | null;
-          id?: number;
+          id?: string;
           image?: string | null;
           max_capacity?: number | null;
           name?: string | null;
@@ -101,7 +95,7 @@ export interface Database {
           created_at?: string;
           description?: string | null;
           discount?: number | null;
-          id?: number;
+          id?: string;
           image?: string | null;
           max_capacity?: number | null;
           name?: string | null;
@@ -186,3 +180,7 @@ export type iBooking = Database["public"]["Tables"]["bookings"]["Row"];
 export type iCabin = Database["public"]["Tables"]["cabins"]["Row"];
 export type iGuest = Database["public"]["Tables"]["guests"]["Row"];
 export type iSetting = Database["public"]["Tables"]["settings"]["Row"];
+
+export type NewCabin = Omit<Partial<Record<keyof iCabin, string>>, "image"> & {
+  image: FileList;
+};

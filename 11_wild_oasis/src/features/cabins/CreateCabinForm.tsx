@@ -4,7 +4,7 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm /* , FieldErrors */ } from "react-hook-form";
-import { iCabin } from "../../types";
+import { NewCabin } from "../../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
@@ -17,7 +17,7 @@ function CreateCabinForm() {
     reset,
     getValues,
     formState: { errors },
-  } = useForm<iCabin>();
+  } = useForm<NewCabin>();
   const queryClient = useQueryClient();
 
   const { isLoading: isCreating, mutate } = useMutation({
@@ -32,8 +32,8 @@ function CreateCabinForm() {
     },
   });
 
-  function onValid(data: iCabin) {
-    mutate(data);
+  function onValid(data: NewCabin) {
+    mutate({ ...data, image: data.image });
   }
 
   // function onInvalid(errors: FieldErrors<iCabin>) {
@@ -100,15 +100,16 @@ function CreateCabinForm() {
           disabled={isCreating}
           defaultValue={0}
           {...register("discount", {
-            validate: (value) => {
-              if (!value && value !== 0) {
+            validate: (v) => {
+              if (!v) {
                 return "discount should be set";
               }
+              const value = Number(v);
               if (value < 0) {
                 return "discount cannot be less than zero";
               }
-              if (value > (getValues()?.regular_price ?? 0)) {
-                return "discount should be less or equal to the regular price";
+              if (value > Number(getValues()?.regular_price)) {
+                return "discount should be less than or equal to the regular price";
               }
             },
           })}
@@ -133,7 +134,13 @@ function CreateCabinForm() {
         htmlFor="image"
         error={errors?.image?.message}
       >
-        <FileInput id="image" accept="image/*" {...register("image")} />
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register("image", {
+            required: "this field is required",
+          })}
+        />
       </FormRow>
 
       <FormRow>
