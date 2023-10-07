@@ -182,5 +182,5 @@ export type iGuest = Database["public"]["Tables"]["guests"]["Row"];
 export type iSetting = Database["public"]["Tables"]["settings"]["Row"];
 
 export type NewCabin = Omit<Partial<Record<keyof iCabin, string>>, "image"> & {
-  image: FileList;
+  image: FileList | string;
 };
