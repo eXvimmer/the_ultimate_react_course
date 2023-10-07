@@ -181,6 +181,7 @@ export type iCabin = Database["public"]["Tables"]["cabins"]["Row"];
 export type iGuest = Database["public"]["Tables"]["guests"]["Row"];
 export type iSetting = Database["public"]["Tables"]["settings"]["Row"];
 
+// TODO: replace iCabin with NewCabin (delete the id)
 export type NewCabin = Omit<Partial<Record<keyof iCabin, string>>, "image"> & {
   image: FileList | string;
 };
