@@ -50,7 +50,6 @@ function CabinRow({ cabin }: { cabin: iCabin }) {
   const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
   const { id, name, image, discount, regular_price, max_capacity } = cabin;
-
   const { isLoading: isDeleting, mutate } = useMutation({
     mutationFn: deleteCabin,
     onSuccess: () => {
@@ -81,7 +80,19 @@ function CabinRow({ cabin }: { cabin: iCabin }) {
           </button>
         </div>
       </TableRow>
-      {showForm && <CreateCabinForm cabinToEdit={cabin} />}
+      {showForm && (
+        <CreateCabinForm
+          cabinToEdit={{
+            ...cabin,
+            name: cabin.name ?? undefined,
+            description: cabin.description ?? undefined,
+            discount: cabin.discount?.toString() ?? undefined,
+            max_capacity: cabin.max_capacity?.toString() ?? undefined,
+            regular_price: cabin.regular_price?.toString() ?? undefined,
+            image: cabin.image ?? "",
+          }}
+        />
+      )}
     </>
   );
 }
