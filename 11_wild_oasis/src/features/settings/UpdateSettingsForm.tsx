@@ -1,8 +1,10 @@
+import { iSetting } from "../../types";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Spinner from "../../ui/Spinner";
 import { useSettings } from "./useSettings";
+import { useUpdateSetting } from "./useUpdateSetting";
 
 function UpdateSettingsForm() {
   const {
@@ -14,9 +16,19 @@ function UpdateSettingsForm() {
       breakfast_price,
     } = {},
   } = useSettings();
+  const { isUpdating, updateSetting } = useUpdateSetting();
 
   if (isLoading) {
     return <Spinner />;
+  }
+
+  function handleUpdate(
+    e: React.FocusEvent<HTMLInputElement, Element>,
+    fieldName: keyof iSetting,
+  ) {
+    const { value } = e.target;
+    if (!value) return;
+    updateSetting({ [fieldName]: value });
   }
 
   return (
@@ -25,28 +37,36 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="min-nights"
+          disabled={isUpdating}
           defaultValue={min_booking_length || ""}
+          onBlur={(e) => handleUpdate(e, "min_booking_length")}
         />
       </FormRow>
       <FormRow label="Maximum nights/booking" htmlFor="max-nights">
         <Input
           type="number"
           id="max-nights"
+          disabled={isUpdating}
           defaultValue={max_booking_length || ""}
+          onBlur={(e) => handleUpdate(e, "max_booking_length")}
         />
       </FormRow>
       <FormRow label="Maximum guests/booking" htmlFor="max-guests">
         <Input
           type="number"
           id="max-guests"
+          disabled={isUpdating}
           defaultValue={max_guests_per_booking || ""}
+          onBlur={(e) => handleUpdate(e, "max_guests_per_booking")}
         />
       </FormRow>
       <FormRow label="Breakfast price" htmlFor="breakfast-price">
         <Input
           type="number"
           id="breakfast-price"
+          disabled={isUpdating}
           defaultValue={breakfast_price || ""}
+          onBlur={(e) => handleUpdate(e, "breakfast_price")}
         />
       </FormRow>
     </Form>
