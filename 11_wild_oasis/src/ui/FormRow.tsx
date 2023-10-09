@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactNode } from "react";
+import { ChildrenProps } from "../types";
 
 const StyledFormRow = styled.div`
   display: grid;
@@ -37,17 +37,13 @@ const Err = styled.span`
   color: var(--color-red-700);
 `;
 
-function FormRow({
-  children,
-  label,
-  error,
-  htmlFor,
-}: {
-  children: ReactNode;
+interface FormRowProps extends ChildrenProps {
   label?: string;
   error?: string;
   htmlFor?: string;
-}) {
+}
+
+function FormRow({ children, label, error, htmlFor }: FormRowProps) {
   return (
     <StyledFormRow>
       {label && <Label htmlFor={htmlFor}>{label}</Label>}

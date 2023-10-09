@@ -1,6 +1,5 @@
 import {
   ReactElement,
-  ReactNode,
   cloneElement,
   createContext,
   useContext,
@@ -10,6 +9,7 @@ import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 import { useOutsideclick } from "../hooks/useOutsideClick";
+import { ChildrenProps } from "../types";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -68,11 +68,7 @@ interface iModalContext {
 
 const ModalContext = createContext<iModalContext>({} as iModalContext);
 
-interface ModalProps {
-  children: ReactNode;
-}
-
-function Modal({ children }: ModalProps) {
+function Modal({ children }: ChildrenProps) {
   const [openName, setOpenName] = useState("");
 
   return (
