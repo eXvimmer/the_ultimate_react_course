@@ -15,7 +15,7 @@ export function useEditCabin() {
       id: NewCabin["id"];
     }) => createEditCabin(newCabinData, id),
     onSuccess: () => {
-      toast.success("new cabin edited successfully");
+      toast.success("the cabin edited successfully");
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
     },
     onError: (err) => {
