@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 
-export function useOutsideclick(handler: () => void, listenCapturing = true) {
-  // TODO: make the type of element more flexible
-  const ref = useRef<HTMLDivElement>(null);
+export function useOutsideclick<T extends HTMLElement>(
+  handler: () => void,
+  listenCapturing = true,
+) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     function handleDocumentClick(e: MouseEvent) {

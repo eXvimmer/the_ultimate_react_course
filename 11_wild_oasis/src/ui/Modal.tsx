@@ -98,7 +98,7 @@ interface WindowProps {
 
 function Window({ children, name }: WindowProps) {
   const { openName, close } = useContext(ModalContext);
-  const ref = useOutsideclick(close);
+  const ref = useOutsideclick<HTMLDivElement>(close);
 
   if (name !== openName) {
     return null;
