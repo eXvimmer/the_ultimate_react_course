@@ -191,3 +191,13 @@ export type NewCabin = Omit<Partial<Record<keyof iCabin, string>>, "image"> & {
 export interface ChildrenProps {
   children: ReactNode;
 }
+
+export type SortByValue = `${
+  | "name"
+  | "max_capacity"
+  | "regular_price"
+  | "discount"}-${"asc" | "desc"}`;
+
+export type ExtractSortField<Type> = Type extends `${infer Field}-${string}`
+  ? Field
+  : never;

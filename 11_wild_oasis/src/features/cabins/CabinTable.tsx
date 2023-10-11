@@ -4,6 +4,7 @@ import { useCabins } from "./useCabins";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import { ExtractSortField, SortByValue } from "../../types";
 
 function CabinTable() {
   const {
@@ -17,8 +18,8 @@ function CabinTable() {
     return <Spinner />;
   }
 
+  // 1. FILTER
   const filterValue = searchParams.get("discount") || "all";
-
   const filteredCabins =
     filterValue === "no-discount"
       ? cabins?.filter((cabin) => cabin.discount === 0)
@@ -26,23 +27,26 @@ function CabinTable() {
       ? cabins?.filter((cabin) => Number(cabin.discount) > 0)
       : cabins;
 
-  // switch (filterValue) {
-  //   case "all":
-  //     filteredCabins = cabins;
-  //     break;
-  //   case "no-discount":
-  //     {
-  //       filteredCabins = cabins?.filter((cabin) => cabin.discount === 0);
-  //     }
-  //     break;
-  //   case "with-discount":
-  //     {
-  //       filteredCabins = cabins?.filter((cabin) => Number(cabin?.discount) > 0);
-  //     }
-  //     break;
-  //   default:
-  //     filteredCabins = cabins;
-  // }
+  // 2. SORT
+  const sortBy = (searchParams.get("sortBy") || "name-asc") as SortByValue;
+  const [field, direction] = sortBy.split("-") as [
+    ExtractSortField<SortByValue>,
+    "asc" | "desc",
+  ];
+  const modifier = direction === "asc" ? 1 : -1;
+  const sortedCabins = filteredCabins?.sort((a, b) => {
+    const fieldA = a[field];
+    const fieldB = b[field];
+
+    if (typeof fieldA === "string" && typeof fieldB === "string") {
+      return fieldA.localeCompare(fieldB) * modifier;
+    } else if (typeof fieldA === "number" && typeof fieldB === "number") {
+      return (fieldA - fieldB) * modifier;
+    } else {
+      // Handle the case when the field types don't match
+      return 0;
+    }
+  });
 
   return (
     <Menus>
@@ -56,7 +60,7 @@ function CabinTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={filteredCabins}
+          data={sortedCabins}
           render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
         />
       </Table>
