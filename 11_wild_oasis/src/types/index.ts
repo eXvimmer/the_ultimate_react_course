@@ -13,14 +13,14 @@ export interface Database {
     Tables: {
       bookings: {
         Row: {
-          cabin_id: number | null;
+          cabin_id: string | null;
           cabin_price: number | null;
           created_at: string;
           end_date: string | null;
           extras_price: number | null;
-          guest_id: number | null;
+          guest_id: string | null;
           has_breakfast: boolean | null;
-          id: number;
+          id: string;
           is_paid: boolean | null;
           num_guests: number | null;
           num_nights: number | null;
@@ -30,14 +30,14 @@ export interface Database {
           total_price: number | null;
         };
         Insert: {
-          cabin_id?: number | null;
+          cabin_id?: string | null;
           cabin_price?: number | null;
           created_at?: string;
           end_date?: string | null;
           extras_price?: number | null;
-          guest_id?: number | null;
+          guest_id?: string | null;
           has_breakfast?: boolean | null;
-          id?: number;
+          id?: string;
           is_paid?: boolean | null;
           num_guests?: number | null;
           num_nights?: number | null;
@@ -47,14 +47,14 @@ export interface Database {
           total_price?: number | null;
         };
         Update: {
-          cabin_id?: number | null;
+          cabin_id?: string | null;
           cabin_price?: number | null;
           created_at?: string;
           end_date?: string | null;
           extras_price?: number | null;
-          guest_id?: number | null;
+          guest_id?: string | null;
           has_breakfast?: boolean | null;
-          id?: number;
+          id?: string;
           is_paid?: boolean | null;
           num_guests?: number | null;
           num_nights?: number | null;
@@ -64,6 +64,12 @@ export interface Database {
           total_price?: number | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "bookings_cabin_id_fkey";
+            columns: ["cabin_id"];
+            referencedRelation: "cabins";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "bookings_guest_id_fkey";
             columns: ["guest_id"];
@@ -111,7 +117,7 @@ export interface Database {
           created_at: string;
           email: string | null;
           full_name: string | null;
-          id: number;
+          id: string;
           national_id: string | null;
           nationality: string | null;
         };
@@ -120,7 +126,7 @@ export interface Database {
           created_at?: string;
           email?: string | null;
           full_name?: string | null;
-          id?: number;
+          id?: string;
           national_id?: string | null;
           nationality?: string | null;
         };
@@ -129,7 +135,7 @@ export interface Database {
           created_at?: string;
           email?: string | null;
           full_name?: string | null;
-          id?: number;
+          id?: string;
           national_id?: string | null;
           nationality?: string | null;
         };
