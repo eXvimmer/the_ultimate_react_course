@@ -74,9 +74,9 @@ const StyledButton = styled.button`
 
 interface iMenusContext {
   openId: string;
-  close: () => void;
-  open: (id: string) => void;
   position: Position;
+  open: (id: string) => void;
+  close: () => void;
   setPosition: (p: Position) => void;
 }
 
@@ -90,11 +90,11 @@ function Menus({ children }: ChildrenProps) {
     <MenusContext.Provider
       value={{
         openId,
+        position,
+        open: setOpenId,
         close() {
           setOpenId("");
         },
-        open: setOpenId,
-        position,
         setPosition,
       }}
     >
@@ -121,6 +121,7 @@ function Toggle({ id }: WithId) {
         y: rect.y + rect.height + 8,
       });
     }
+    // TODO: FIX this is always true. useOutsideClick closes the menu every time
     openId === "" || openId !== id ? open(id) : close();
   };
 
