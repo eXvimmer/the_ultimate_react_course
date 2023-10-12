@@ -1,3 +1,4 @@
+import { iCabin } from "../types";
 import Filter from "../ui/Filter";
 import SortBy from "../ui/SortBy";
 import TableOperations from "../ui/TableOperations";
@@ -13,7 +14,7 @@ function CabinTableOperations() {
           { value: "with-discount", label: "With discount" },
         ]}
       />
-      <SortBy
+      <SortBy<iCabin>
         options={[
           { value: "name-asc", label: "sort by name (A-Z)" },
           { value: "name-desc", label: "sort by name (Z-A)" },

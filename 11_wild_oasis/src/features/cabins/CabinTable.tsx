@@ -4,8 +4,8 @@ import { useCabins } from "./useCabins";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
-import { ExtractSortField, SortByValue, iCabin } from "../../types";
 import Empty from "../../ui/Empty";
+import { iCabin } from "../../types";
 
 function CabinTable() {
   const {
@@ -33,15 +33,12 @@ function CabinTable() {
       : cabins;
 
   // 2. SORT
-  const sortBy = (searchParams.get("sortBy") || "name-asc") as SortByValue;
-  const [field, direction] = sortBy.split("-") as [
-    ExtractSortField<SortByValue>,
-    "asc" | "desc",
-  ];
+  const sortBy = searchParams.get("sortBy") || "name-asc";
+  const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
   const sortedCabins = filteredCabins?.sort((a, b) => {
-    const fieldA = a[field];
-    const fieldB = b[field];
+    const fieldA = a[field as keyof iCabin];
+    const fieldB = b[field as keyof iCabin];
 
     if (typeof fieldA === "string" && typeof fieldB === "string") {
       return fieldA.localeCompare(fieldB) * modifier;

@@ -198,11 +198,10 @@ export interface ChildrenProps {
   children: ReactNode;
 }
 
-export type SortByValue = `${
-  | "name"
-  | "max_capacity"
-  | "regular_price"
-  | "discount"}-${"asc" | "desc"}`;
+export type SortDirection = "asc" | "desc";
+
+export type SortByValue<T, K extends keyof T> = `${K &
+  string}-${SortDirection}`;
 
 export type ExtractSortField<Type> = Type extends `${infer Field}-${string}`
   ? Field
