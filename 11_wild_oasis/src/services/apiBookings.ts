@@ -1,4 +1,5 @@
-import { iBooking } from "../types";
+import { FullBooking, iBooking } from "../types";
+import { pageSize } from "../utils/constants";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
@@ -12,14 +13,19 @@ interface Options {
     field: string;
     direction: string;
   };
+  page: number;
 }
 
-export async function getBookings({ filter, sortBy }: Options) {
+export async function getBookings({ filter, sortBy, page }: Options): Promise<{
+  data: FullBooking[] | null;
+  count: number | null;
+}> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let query: any = supabase // NOTE: any is intentional
     .from("bookings")
     .select(
       `id, created_at, start_date, end_date, num_nights, num_guests, status, total_price, cabins(name), guests(full_name, email)`,
+      { count: "exact" },
     );
 
   // 1. Filter
@@ -34,13 +40,21 @@ export async function getBookings({ filter, sortBy }: Options) {
     });
   }
 
-  const { data, error } = await query;
+  if (page) {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    // TODO: BUG go to the last page in bookings and then filter (unconfirmed),
+    // you'll get an error
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     console.error(error);
     throw new Error("bookings could not be loaded");
   }
-  return data;
+  return { data, count };
 }
 
 export async function getBooking(id: iBooking["id"]) {
