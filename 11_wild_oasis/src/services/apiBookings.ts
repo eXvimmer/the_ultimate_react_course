@@ -2,12 +2,26 @@ import { iBooking } from "../types";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-export async function getBookings() {
-  const { data, error } = await supabase
+type Filter = {
+  field: string;
+  value: string;
+  method?: string;
+} | null;
+
+export async function getBookings({ filter }: { filter: Filter }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let query: any = supabase // NOTE: any is intentional
     .from("bookings")
     .select(
       `id, created_at, start_date, end_date, num_nights, num_guests, status, total_price, cabins(name), guests(full_name, email)`,
     );
+
+  // 1. Filter
+  if (filter) {
+    query = query[filter.method || "eq"](filter.field, filter.value);
+  }
+  const { data, error } = await query;
+
   if (error) {
     console.error(error);
     throw new Error("bookings could not be loaded");

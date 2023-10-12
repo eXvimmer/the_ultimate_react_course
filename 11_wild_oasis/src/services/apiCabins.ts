@@ -22,6 +22,7 @@ export async function createEditCabin(newCabin: NewCabin, id?: NewCabin["id"]) {
   const imagePath = hasImagePath
     ? imageTitle
     : `${supabaseUrl}/storage/v1/object/public/cabin_images/${imageName}`;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let query: any = supabase.from("cabins"); // NOTE: any is intentional
   const queryData = {
     ...newCabin,
