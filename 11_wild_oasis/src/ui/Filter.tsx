@@ -12,7 +12,7 @@ const StyledFilter = styled.div`
 `;
 
 interface FilterButtonProps {
-  active: 0 | 1; // instead of true or false to make the warning go away
+  $active?: boolean;
 }
 
 const FilterButton = styled.button<FilterButtonProps>`
@@ -20,7 +20,7 @@ const FilterButton = styled.button<FilterButtonProps>`
   border: none;
 
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
@@ -68,7 +68,7 @@ function Filter({ filterField, options }: FilterProps) {
         <FilterButton
           key={option.value}
           onClick={() => handleClick(option.value)}
-          active={option.value === currentFilterValue ? 1 : 0}
+          $active={option.value === currentFilterValue}
           disabled={option.value === currentFilterValue}
         >
           {option.label}

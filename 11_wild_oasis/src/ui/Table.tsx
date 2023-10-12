@@ -15,9 +15,13 @@ interface WithColumns {
   columns: string;
 }
 
-const CommonRow = styled.div<WithColumns>`
+interface StyledHeaderProps {
+  $columns: string;
+}
+
+const CommonRow = styled.div<StyledHeaderProps>`
   display: grid;
-  grid-template-columns: ${(props) => props.columns};
+  grid-template-columns: ${(props) => props.$columns};
   column-gap: 2.4rem;
   align-items: center;
   transition: none;
@@ -79,7 +83,7 @@ function Table({ children, columns }: ChildrenProps & WithColumns) {
 function Header({ children }: ChildrenProps) {
   const { columns } = useContext(TableContext);
   return (
-    <StyledHeader role="row" as="header" columns={columns}>
+    <StyledHeader role="row" as="header" $columns={columns}>
       {children}
     </StyledHeader>
   );
@@ -88,7 +92,7 @@ function Header({ children }: ChildrenProps) {
 function Row({ children }: ChildrenProps) {
   const { columns } = useContext(TableContext);
   return (
-    <StyledRow role="row" columns={columns}>
+    <StyledRow role="row" $columns={columns}>
       {children}
     </StyledRow>
   );

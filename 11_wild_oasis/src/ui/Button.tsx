@@ -49,7 +49,7 @@ const variations = {
 };
 
 interface ButtonProps {
-  variation?: keyof typeof variations;
+  $variation?: keyof typeof variations;
   size?: keyof typeof sizes;
 }
 
@@ -58,14 +58,14 @@ const Button = styled.button<ButtonProps>`
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
 
-  ${(props) => variations[props.variation ?? "primary"]}
+  ${(props) => variations[props.$variation ?? "primary"]}
   ${(props) => sizes[props.size ?? "medium"]}
 `;
 
 // NOTE: Added for documentation. Otherwise we explicitly define the required
 // size and variation, if they are undefined, in the code above.
 Button.defaultProps = {
-  variation: "primary",
+  $variation: "primary",
   size: "medium",
 };
 
