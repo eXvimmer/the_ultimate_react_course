@@ -4,7 +4,8 @@ import { useCabins } from "./useCabins";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
-import { ExtractSortField, SortByValue } from "../../types";
+import { ExtractSortField, SortByValue, iCabin } from "../../types";
+import Empty from "../../ui/Empty";
 
 function CabinTable() {
   const {
@@ -16,6 +17,10 @@ function CabinTable() {
 
   if (isLoading) {
     return <Spinner />;
+  }
+
+  if (!cabins?.length) {
+    return <Empty resourceName="cabins" />;
   }
 
   // 1. FILTER
@@ -59,7 +64,7 @@ function CabinTable() {
           <div>Discount</div>
           <div></div>
         </Table.Header>
-        <Table.Body
+        <Table.Body<iCabin>
           data={sortedCabins}
           render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
         />

@@ -207,3 +207,19 @@ export type SortByValue = `${
 export type ExtractSortField<Type> = Type extends `${infer Field}-${string}`
   ? Field
   : never;
+
+export interface FullBooking
+  extends Pick<
+    iBooking,
+    | "id"
+    | "created_at"
+    | "start_date"
+    | "end_date"
+    | "num_nights"
+    | "num_guests"
+    | "status"
+    | "total_price"
+  > {
+  cabins: { name: iCabin["name"] } | null;
+  guests: { full_name: iGuest["full_name"]; email: iGuest["email"] } | null;
+}

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
-import { ChildrenProps, iCabin } from "../types";
+import { ChildrenProps } from "../types";
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -94,12 +94,12 @@ function Row({ children }: ChildrenProps) {
   );
 }
 
-interface BodyProps {
-  data?: iCabin[];
-  render: (cabin: iCabin) => JSX.Element;
+interface BodyProps<T> {
+  data?: T[];
+  render: (el: T) => JSX.Element;
 }
 
-function Body({ data, render }: BodyProps) {
+function Body<T>({ data, render }: BodyProps<T>) {
   if (!data || !data.length) {
     return <Empty>No data to show at the moment</Empty>;
   }
@@ -112,3 +112,7 @@ Table.Body = Body;
 Table.Footer = Footer;
 
 export default Table;
+
+/*
+ in order to make the Body component more generic I changed the BodyProps and then Body component to be generic. How should I pass the right type when using the component?
+*/
