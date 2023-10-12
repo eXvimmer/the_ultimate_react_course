@@ -2,13 +2,19 @@ import { iBooking } from "../types";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-type Filter = {
-  field: string;
-  value: string;
-  method?: string;
-} | null;
+interface Options {
+  filter: {
+    field: string;
+    value: string;
+    method?: string;
+  } | null;
+  sortBy?: {
+    field: string;
+    direction: string;
+  };
+}
 
-export async function getBookings({ filter }: { filter: Filter }) {
+export async function getBookings({ filter, sortBy }: Options) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let query: any = supabase // NOTE: any is intentional
     .from("bookings")
@@ -20,6 +26,14 @@ export async function getBookings({ filter }: { filter: Filter }) {
   if (filter) {
     query = query[filter.method || "eq"](filter.field, filter.value);
   }
+
+  // 2. SORT
+  if (sortBy) {
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+  }
+
   const { data, error } = await query;
 
   if (error) {
