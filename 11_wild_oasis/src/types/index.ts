@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { useBooking } from "../features/bookings/useBooking";
 
 export type Json =
   | string
@@ -206,6 +207,8 @@ export type SortByValue<T, K extends keyof T> = `${K &
 export type ExtractSortField<Type> = Type extends `${infer Field}-${string}`
   ? Field
   : never;
+
+export type SingleBooking = ReturnType<typeof useBooking>;
 
 export interface FullBooking
   extends Pick<
