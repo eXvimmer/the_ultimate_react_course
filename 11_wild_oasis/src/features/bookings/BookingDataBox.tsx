@@ -134,6 +134,7 @@ function BookingDataBox({ booking }: BookingDataBoxProps) {
   const national_id = guests?.national_id;
   const cabinName = cabins?.name;
 
+  // TODO: all of the default values passed to the helper functions are wrong, FIX them
   return (
     <StyledBookingDataBox>
       <Header>
@@ -145,11 +146,19 @@ function BookingDataBox({ booking }: BookingDataBoxProps) {
         </div>
 
         <p>
-          {format(new Date(start_date || ""), "EEE, MMM dd yyyy")} (
-          {isToday(new Date(start_date || ""))
+          {format(
+            start_date ? new Date(start_date) : Date.now(),
+            "EEE, MMM dd yyyy",
+          )}{" "}
+          (
+          {isToday(start_date ? new Date(start_date) : Date.now())
             ? "Today"
-            : formatDistanceFromNow(start_date || "")}
-          ) &mdash; {format(new Date(end_date || ""), "EEE, MMM dd yyyy")}
+            : formatDistanceFromNow(start_date || Date.now().toString())}
+          ) &mdash;{" "}
+          {format(
+            end_date ? new Date(end_date) : Date.now(),
+            "EEE, MMM dd yyyy",
+          )}
         </p>
       </Header>
 
@@ -197,7 +206,11 @@ function BookingDataBox({ booking }: BookingDataBoxProps) {
 
       <Footer>
         <p>
-          Booked {format(new Date(created_at || ""), "EEE, MMM dd yyyy, p")}
+          Booked{" "}
+          {format(
+            created_at ? new Date(created_at) : Date.now(),
+            "EEE, MMM dd yyyy, p",
+          )}
         </p>
       </Footer>
     </StyledBookingDataBox>
