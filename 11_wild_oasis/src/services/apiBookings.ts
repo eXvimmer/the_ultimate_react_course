@@ -1,4 +1,4 @@
-import { FullBooking, SingleBooking, iBooking } from "../types";
+import { FullBooking, iBooking } from "../types";
 import { pageSize } from "../utils/constants";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
@@ -43,8 +43,6 @@ export async function getBookings({ filter, sortBy, page }: Options): Promise<{
   if (page) {
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
-    // TODO: BUG go to the last page in bookings and then filter (unconfirmed),
-    // you'll get an error
     query = query.range(from, to);
   }
 

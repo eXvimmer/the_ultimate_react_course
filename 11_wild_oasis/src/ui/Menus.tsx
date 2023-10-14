@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { ChildrenProps } from "../types";
-import { MouseEventHandler, createContext, useContext, useState } from "react";
+import {
+  ButtonHTMLAttributes,
+  MouseEventHandler,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import { createPortal } from "react-dom";
 import { useOutsideclick } from "../hooks/useOutsideClick";
@@ -148,7 +154,7 @@ function List({ children, id }: WithId & ChildrenProps) {
   );
 }
 
-interface ButtonProps extends ChildrenProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: string | JSX.Element;
   onClick?: () => void;
 }
