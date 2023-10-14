@@ -62,7 +62,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
       onSubmit={handleSubmit(onValid /*, onInvalid */)}
       type={onCloseModal ? "modal" : "regular"}
     >
-      <FormRow label="Cabin Name" htmlFor="name" error={errors?.name?.message}>
+      <FormRow label="Cabin Name" error={errors?.name?.message}>
         <Input
           type="text"
           id="name"
@@ -71,11 +71,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
         />
       </FormRow>
 
-      <FormRow
-        label="Maximum Capacity"
-        htmlFor="max_capacity"
-        error={errors?.max_capacity?.message}
-      >
+      <FormRow label="Maximum Capacity" error={errors?.max_capacity?.message}>
         <Input
           type="number"
           id="max_capacity"
@@ -90,11 +86,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
         />
       </FormRow>
 
-      <FormRow
-        label="Regular Price"
-        htmlFor="regular_price"
-        error={errors?.regular_price?.message}
-      >
+      <FormRow label="Regular Price" error={errors?.regular_price?.message}>
         <Input
           type="number"
           id="regular_price"
@@ -109,11 +101,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
         />
       </FormRow>
 
-      <FormRow
-        label="Discount"
-        htmlFor="discount"
-        error={errors?.discount?.message}
-      >
+      <FormRow label="Discount" error={errors?.discount?.message}>
         <Input
           type="number"
           id="discount"
@@ -136,11 +124,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
         />
       </FormRow>
 
-      <FormRow
-        label="Description"
-        htmlFor="description"
-        error={errors?.description?.message}
-      >
+      <FormRow label="Description" error={errors?.description?.message}>
         <Textarea
           type="number"
           id="description"
@@ -149,11 +133,7 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
         />
       </FormRow>
 
-      <FormRow
-        label="Cabin Photo"
-        htmlFor="image"
-        error={errors?.image?.message}
-      >
+      <FormRow label="Cabin Photo" error={errors?.image?.message}>
         <FileInput
           id="image"
           accept="image/*"
@@ -164,18 +144,21 @@ function CreateCabinForm({ cabinToEdit, onCloseModal }: CreateCabinFormProps) {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
-        <Button
-          $variation="secondary"
-          type="reset"
-          disabled={isProcessing}
-          onClick={() => onCloseModal?.()}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isProcessing}>
-          {isEditSession ? "Edit" : "Create new"} cabin
-        </Button>
+        {/* NOTE: I wrap the buttons with a span.fake-buttons to satisfy the
+        requirement of having children props with id */}
+        <span id="fake-buttons">
+          <Button
+            $variation="secondary"
+            type="reset"
+            disabled={isProcessing}
+            onClick={() => onCloseModal?.()}
+          >
+            Cancel
+          </Button>
+          <Button disabled={isProcessing}>
+            {isEditSession ? "Edit" : "Create new"} cabin
+          </Button>
+        </span>
       </FormRow>
     </Form>
   );

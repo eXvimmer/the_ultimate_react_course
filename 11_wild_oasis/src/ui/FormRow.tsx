@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ChildrenProps } from "../types";
+import { ChildrenPropsWithId } from "../types";
 
 const StyledFormRow = styled.div`
   display: grid;
@@ -37,16 +37,15 @@ const Err = styled.span`
   color: var(--color-red-700);
 `;
 
-interface FormRowProps extends ChildrenProps {
+interface FormRowProps extends ChildrenPropsWithId<string> {
   label?: string;
   error?: string;
-  htmlFor?: string;
 }
 
-function FormRow({ children, label, error, htmlFor }: FormRowProps) {
+function FormRow({ children, label, error }: FormRowProps) {
   return (
     <StyledFormRow>
-      {label && <Label htmlFor={htmlFor}>{label}</Label>}
+      {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
       {error && <Err>{error}</Err>}
     </StyledFormRow>

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import { useBooking } from "../features/bookings/useBooking";
 
 export type Json =
@@ -197,6 +197,10 @@ export type NewCabin = Omit<Partial<Record<keyof iCabin, string>>, "image"> & {
 
 export interface ChildrenProps {
   children: ReactNode;
+}
+
+export interface ChildrenPropsWithId<T> {
+  children: ReactElement<{ id: T }>;
 }
 
 export type SortDirection = "asc" | "desc";
