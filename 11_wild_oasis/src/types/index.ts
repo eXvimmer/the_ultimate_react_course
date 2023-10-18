@@ -200,7 +200,7 @@ export interface ChildrenProps {
 }
 
 export interface ChildrenPropsWithId<T> {
-  children: ReactElement<{ id: T }>;
+  children: ReactElement<{ id?: T }>;
 }
 
 export type SortDirection = "asc" | "desc";
