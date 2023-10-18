@@ -3,6 +3,7 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import { useSignup } from "./useSignup";
 
 type NewUser = {
   email: string;
@@ -12,11 +13,18 @@ type NewUser = {
 };
 
 function SignupForm() {
-  const { register, formState, getValues, handleSubmit } = useForm<NewUser>();
+  const { signup, isLoading } = useSignup();
+  const { register, formState, getValues, handleSubmit, reset } =
+    useForm<NewUser>();
   const { errors } = formState;
 
-  function onValid(data: NewUser) {
-    console.log(data);
+  function onValid({ fullName, email, password }: NewUser) {
+    signup(
+      { fullName, email, password },
+      {
+        onSettled: () => reset(),
+      },
+    );
   }
 
   return (
@@ -25,6 +33,7 @@ function SignupForm() {
         <Input
           type="text"
           id="fullName"
+          disabled={isLoading}
           {...register("fullName", { required: "this field is required" })}
         />
       </FormRow>
@@ -33,6 +42,7 @@ function SignupForm() {
         <Input
           type="email"
           id="email"
+          disabled={isLoading}
           {...register("email", {
             required: "this field is required",
             pattern: {
@@ -50,6 +60,7 @@ function SignupForm() {
         <Input
           type="password"
           id="password"
+          disabled={isLoading}
           {...register("password", {
             required: "this field is required",
             minLength: {
@@ -64,6 +75,7 @@ function SignupForm() {
         <Input
           type="password"
           id="passwordConfirm"
+          disabled={isLoading}
           {...register("passwordConfirm", {
             required: "this field is required",
             validate: (value: NewUser["passwordConfirm"]) =>
@@ -76,10 +88,15 @@ function SignupForm() {
         {/* NOTE: to satisfy the requirement for having a child with id, I had
         to wrap these buttons with a span */}
         <span id="fake-buttons">
-          <Button $variation="secondary" type="reset">
+          <Button
+            $variation="secondary"
+            type="reset"
+            disabled={isLoading}
+            style={{ marginRight: "1rem" }}
+          >
             Cancel
           </Button>
-          <Button>Create new user</Button>
+          <Button disabled={isLoading}>Create new user</Button>
         </span>
       </FormRow>
     </Form>
