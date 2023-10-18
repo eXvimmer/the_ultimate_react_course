@@ -93,6 +93,7 @@ function SignupForm() {
             type="reset"
             disabled={isLoading}
             style={{ marginRight: "1rem" }}
+            onClick={() => reset()}
           >
             Cancel
           </Button>
