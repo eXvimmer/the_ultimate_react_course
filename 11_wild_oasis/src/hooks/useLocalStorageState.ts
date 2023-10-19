@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
 
-// TODO: set the type of initialState to the proper type
-export function useLocalStorageState(initialState: unknown, key: string) {
-  const [value, setValue] = useState(function () {
+export function useLocalStorageState<T>(
+  initialState: T | (() => T),
+  key: string,
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState<T>(() => {
     const storedValue = localStorage.getItem(key);
-    return storedValue ? JSON.parse(storedValue) : initialState;
+    if (storedValue) {
+      return JSON.parse(storedValue);
+    }
+    return typeof initialState === "function"
+      ? (initialState as () => T)()
+      : initialState;
   });
 
-  useEffect(
-    function () {
-      localStorage.setItem(key, JSON.stringify(value));
-    },
-    [value, key],
-  );
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
 
   return [value, setValue];
 }
