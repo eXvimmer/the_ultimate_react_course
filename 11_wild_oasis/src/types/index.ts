@@ -229,3 +229,11 @@ export interface FullBooking
   cabins: { name: iCabin["name"] } | null;
   guests: { full_name: iGuest["full_name"]; email: iGuest["email"] } | null;
 }
+
+export type RecentBookings =
+  | {
+      created_at: string;
+      total_price: number | null;
+      extras_price: number | null;
+    }[]
+  | undefined;

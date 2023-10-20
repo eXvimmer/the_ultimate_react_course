@@ -4,18 +4,12 @@ import {
   HiOutlineCalendarDays,
   HiOutlineChartBar,
 } from "react-icons/hi2";
-import { iBooking } from "../../types";
+import { RecentBookings, iBooking } from "../../types";
 import Stat from "./Stat";
 import { formatCurrency } from "../../utils/helpers";
 
 interface StatsProps {
-  bookings?:
-    | {
-        created_at: string;
-        total_price: number | null;
-        extras_price: number | null;
-      }[]
-    | undefined;
+  bookings?: RecentBookings;
   confirmedStays?: iBooking[];
   numDays: number;
   cabinsCount: number;
