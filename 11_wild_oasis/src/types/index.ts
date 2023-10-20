@@ -1,5 +1,6 @@
 import { ReactElement, ReactNode } from "react";
 import { useBooking } from "../features/bookings/useBooking";
+import { useTodayActivity } from "../features/check-in-out/useTodayActivity";
 
 export type Json =
   | string
@@ -213,6 +214,8 @@ export type ExtractSortField<Type> = Type extends `${infer Field}-${string}`
   : never;
 
 export type SingleBooking = ReturnType<typeof useBooking>;
+type Activities = ReturnType<typeof useTodayActivity>["activities"];
+export type Activity = NonNullable<Activities>[number];
 
 export interface FullBooking
   extends Pick<
