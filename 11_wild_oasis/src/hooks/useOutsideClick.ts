@@ -8,14 +8,11 @@ export function useOutsideclick<T extends HTMLElement>(
 
   useEffect(() => {
     function handleDocumentClick(e: MouseEvent) {
-      // FIX: this logic will always be true if we're using a Modal (modal will
-      // be located in document.body and e.target will be somewhere else and so
-      // the ref won't contain the e.target)
       if (
         // modal is present
         ref.current &&
         // the target is not inside modal (clicked outside the modal)
-        !ref.current?.contains(e.target as T) // FIX: BUG when using portal
+        !ref.current?.contains(e.target as T)
       ) {
         handler();
       }

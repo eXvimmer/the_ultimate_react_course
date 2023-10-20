@@ -117,6 +117,7 @@ function Toggle({ id }: WithId) {
   const { openId, open, close, setPosition } = useContext(MenusContext);
 
   const handleToggleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
     const rect = (e.target as HTMLElement)
       ?.closest("button")
       ?.getBoundingClientRect();
@@ -127,7 +128,6 @@ function Toggle({ id }: WithId) {
         y: rect.y + rect.height + 8,
       });
     }
-    // TODO: FIX this is always true. useOutsideClick closes the menu every time
     openId === "" || openId !== id ? open(id) : close();
   };
 
@@ -140,7 +140,7 @@ function Toggle({ id }: WithId) {
 
 function List({ children, id }: WithId & ChildrenProps) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useOutsideclick<HTMLUListElement>(close);
+  const ref = useOutsideclick<HTMLUListElement>(close, false);
 
   if (openId !== id) {
     return null;
