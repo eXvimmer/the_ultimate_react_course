@@ -7,12 +7,17 @@ type DarkModeContextType = {
   toggleDarkMode: () => void;
 };
 
+const userDefault = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 const DarkModeContext = createContext<DarkModeContextType>({
-  isDarkMode: false,
+  isDarkMode: userDefault,
 } as DarkModeContextType);
 
 export function DarkModeProvider({ children }: ChildrenProps) {
-  const [isDarkMode, setIsDarkMode] = useLocalStorageState(false, "isDarkMode");
+  const [isDarkMode, setIsDarkMode] = useLocalStorageState(
+    userDefault,
+    "isDarkMode",
+  );
 
   useEffect(() => {
     if (isDarkMode) {

@@ -16,7 +16,7 @@ export async function signup({
     options: {
       data: {
         full_name: fullName, // NOTE: I used snake-case instead of camel-case to be consistent in database
-        avatar: "", // TODO: add the avatar
+        avatar: "",
       },
     },
   });

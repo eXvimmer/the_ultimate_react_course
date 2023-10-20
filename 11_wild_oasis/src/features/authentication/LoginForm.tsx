@@ -7,10 +7,8 @@ import { useLogin } from "./useLogin";
 import SpinnerMini from "../../ui/SpinnerMini";
 
 function LoginForm() {
-  // TODO: remove the default email and password when you're done (from here
-  // and from database)
-  const [email, setEmail] = useState("mustafa@gmail.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { login, isLoading } = useLogin();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
